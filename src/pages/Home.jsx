@@ -4,6 +4,7 @@ import Experience from '../components/home/Experience'
 import Education from '../components/home/Education'
 import AIWorkflow from '../components/home/AIWorkflow'
 import Skills from '../components/home/Skills'
+import Reference from '../components/home/Reference'
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <Education />
       <AIWorkflow />
       <Skills />
+      <Reference />
     </>
   )
 }
