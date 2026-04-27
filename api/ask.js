@@ -1,0 +1,87 @@
+import { verifyTurnstile } from './_lib/turnstile.js'
+import { checkRateLimit } from './_lib/rateLimit.js'
+import { checkSpendCap, recordSpend } from './_lib/spendCap.js'
+import { trimMessages } from './_lib/trimMessages.js'
+import { aiProvider } from '../src/lib/aiProvider.js'
+import { buildSystemPrompt } from '../src/lib/claudeContext.js'
+
+const FALLBACK_SPEND_CAP = "Ask Emile is taking a break for today. Email me at emilegascoin@gmail.com and I'll get back to you when I've had a think."
+
+function getIp(req) {
+  const fwd = req.headers['x-forwarded-for']
+  if (typeof fwd === 'string') return fwd.split(',')[0].trim()
+  return req.headers['x-real-ip'] || 'unknown'
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' })
+    return
+  }
+
+  const { message, history = [], turnstileToken } = req.body || {}
+  const ip = getIp(req)
+
+  if (!message || typeof message !== 'string') {
+    res.status(400).json({ error: 'Missing message' })
+    return
+  }
+
+  // 1. Turnstile
+  const turnstileOk = await verifyTurnstile(turnstileToken, ip)
+  if (!turnstileOk) {
+    res.status(403).json({ error: 'Verification failed' })
+    return
+  }
+
+  // 2. Rate limit
+  const rl = await checkRateLimit(ip)
+  if (!rl.allowed) {
+    res.status(429).json({
+      error: "You've hit today's limit. Email me at emilegascoin@gmail.com if you've got more questions.",
+    })
+    return
+  }
+
+  // 3. Spend cap
+  const spend = await checkSpendCap()
+  if (!spend.allowed) {
+    res.status(200).setHeader('Content-Type', 'text/plain; charset=utf-8')
+    res.write(FALLBACK_SPEND_CAP)
+    res.end()
+    return
+  }
+
+  // 4. Token trim
+  const systemPrompt = buildSystemPrompt()
+  const allMessages = [...history, { role: 'user', content: message }]
+  const { messages: trimmedMessages, trimmed } = trimMessages(allMessages, systemPrompt, 8000)
+
+  // 5. Provider
+  res.status(200).setHeader('Content-Type', 'text/plain; charset=utf-8')
+  res.setHeader('Cache-Control', 'no-cache')
+  if (trimmed) res.write('(earlier messages trimmed)\n\n')
+
+  let result
+  try {
+    result = await aiProvider.send({ systemPrompt, messages: trimmedMessages })
+    for await (const chunk of result.stream) {
+      res.write(chunk)
+    }
+  } catch (err) {
+    console.error('Provider error', err)
+    res.write(`\n\nSomething went wrong on my end. Email me at emilegascoin@gmail.com.`)
+  } finally {
+    res.end()
+  }
+
+  // 6. Record spend (after stream complete)
+  if (result?.getUsage) {
+    try {
+      const usage = result.getUsage()
+      await recordSpend(usage.costUsd)
+    } catch (err) {
+      console.error('recordSpend failed', err)
+    }
+  }
+}
