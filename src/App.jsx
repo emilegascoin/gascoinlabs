@@ -1,7 +1,16 @@
+import { Routes, Route } from 'react-router-dom'
+import Home from './pages/Home'
+import Ask from './pages/Ask'
+import Elecdes from './pages/work/Elecdes'
+import NotFound from './pages/NotFound'
+
 export default function App() {
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <h1 className="font-serif text-5xl text-navy">Emile Gascoin</h1>
-    </main>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/ask" element={<Ask />} />
+      <Route path="/work/elecdes" element={<Elecdes />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   )
 }
