@@ -1,4 +1,5 @@
-// Lazy-loads the Turnstile script and renders an invisible widget on demand.
+// Lazy-loads the Turnstile script and gets a token on demand. Visibility
+// (invisible vs managed) is configured on the widget in Cloudflare dashboard.
 let scriptPromise
 
 function loadScript() {
@@ -22,19 +23,22 @@ export async function getTurnstileToken() {
 
   return new Promise((resolve, reject) => {
     const container = document.createElement('div')
-    container.style.display = 'none'
+    container.style.position = 'fixed'
+    container.style.bottom = '-9999px'
+    container.style.left = '-9999px'
     document.body.appendChild(container)
-    window.turnstile.render(container, {
+
+    let widgetId
+    const cleanup = () => {
+      try { window.turnstile.remove(widgetId) } catch {}
+      try { document.body.removeChild(container) } catch {}
+    }
+
+    widgetId = window.turnstile.render(container, {
       sitekey: siteKey,
-      size: 'invisible',
-      callback: (token) => {
-        resolve(token)
-        document.body.removeChild(container)
-      },
-      'error-callback': () => {
-        reject(new Error('Turnstile error'))
-        document.body.removeChild(container)
-      },
+      callback: (token) => { cleanup(); resolve(token) },
+      'error-callback': () => { cleanup(); reject(new Error('Turnstile error')) },
+      'expired-callback': () => { cleanup(); reject(new Error('Turnstile expired')) },
     })
   })
 }
