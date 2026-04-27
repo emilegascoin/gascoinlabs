@@ -5,6 +5,7 @@ import Education from '../components/home/Education'
 import AIWorkflow from '../components/home/AIWorkflow'
 import Skills from '../components/home/Skills'
 import Reference from '../components/home/Reference'
+import Contact from '../components/home/Contact'
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <AIWorkflow />
       <Skills />
       <Reference />
+      <Contact />
     </>
   )
 }
