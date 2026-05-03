@@ -4,7 +4,7 @@
 export const profile = {
   name: 'Emile Gascoin',
   email: 'emilegascoin@gmail.com',
-  phone: '+64 21 261 0764',
+  phone: '+61 405 482 025',
   github: 'https://github.com/emilegascoin',
   location: 'Melbourne, VIC',
   availability: 'Available now',
@@ -49,13 +49,13 @@ export const education = [
   {
     school: 'University of Auckland',
     qualification: 'Programming with Web Technologies',
-    dates: 'Jul–Nov 2026',
+    dates: 'Jul-Nov 2026',
     detail: 'Svelte, Node.js, SQLite, REST APIs',
   },
   {
     school: 'Victoria University of Wellington',
     qualification: 'BSc Computer Science',
-    dates: 'Nov 2023',
+    dates: 'Mar 2019 - Nov 2023',
     detail: 'Database Systems, AI/ML, Systems Programming, UX Engineering, Cloud and Networking',
   },
 ]
@@ -92,11 +92,11 @@ export const reference = {
 
 export const askEmileWidget = {
   // [PLACEHOLDER] Emile to write his own
-  greeting: 'Hi — what would you like to know about me or my work?',
+  greeting: 'Hi! I am Emile, what do you want to chat about?',
   suggestions: [
-    'What is the elecdes redesign?',
-    'How do you actually use AI?',
     'What kind of role are you looking for?',
+    'How do you use AI in your day to day?',
+    'What was the elecdes redesign?',
   ],
 }
 
@@ -104,7 +104,7 @@ export const elecdesCaseStudy = {
   // [PLACEHOLDER] Emile to flesh out
   title: 'Elecdes Design Suite — marketing site redesign',
   role: 'Sole designer and developer',
-  dates: 'Late 2024 — early 2026',
+  dates: 'Mid 2025 - early 2026',
   stack: ['HTML', 'CSS', 'JavaScript', 'PHP', 'MySQL', 'OpenAI Whisper', 'Git'],
   context: 'Scada Systems Ltd needed a modernised marketing site for its flagship product, Elecdes Design Suite. The old site centred on a rotating slider and dense product copy. I was given full autonomy on the redesign.',
   process: [
