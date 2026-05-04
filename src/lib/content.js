@@ -137,6 +137,49 @@ export const elecdesCaseStudy = {
   ],
 }
 
+export const gascoinlabsProject = {
+  title: 'gascoinlabs.com: personal portfolio and chatbot',
+  subtitle: 'This site. A React portfolio with a serverless AI chatbot grounded in my CV. Built end to end using Claude Code as a development partner, the same workflow it describes.',
+  role: 'Designer and developer',
+  dates: 'Early 2026',
+  stack: ['React 19', 'Vite', 'Tailwind', 'React Router', 'Node.js', 'Vercel', 'Upstash Redis', 'Cloudflare Turnstile', 'Google Gemini API', 'Vitest'],
+  context: 'My commercial work at Scada Systems was vanilla JavaScript, PHP and MySQL. For this site I wanted a stack that reflects how I would actually build something today if given the choice. React on the frontend, serverless Node functions for the backend, Redis for state, Cloudflare Turnstile for bot protection and Google Gemini powering the chatbot. The whole thing was built using Claude Code as a development partner with a subagent-driven workflow.',
+  process: [
+    'Started with a planning session in Claude Code to scope the whole site as a numbered task list. 32 tasks in total.',
+    'Wrote tests first for the API and abuse protection logic using Vitest. 32 tests passing across rate limiting, spend cap, message trimming and Turnstile verification.',
+    'Used subagent-driven development for non-trivial work. Fresh subagent per task with a two-stage review (spec compliance, then code quality).',
+    'One logical change per commit so the history is actually readable. The git log doubles as a timeline of what was built when.',
+    'Deployed early to Vercel and iterated on the live site rather than building everything locally first.',
+  ],
+  features: [
+    { title: 'Ask Emile chatbot', detail: 'Serverless AI chatbot grounded in my CV and personal context. Provider-agnostic adapter so I can swap between Gemini and Claude with an env var. Streams responses back to the client with an animated typewriter effect for a more human feel.' },
+    { title: 'Three-layer abuse protection', detail: 'Every chatbot request goes through Turnstile verification, then a per-IP daily rate limit (20/day) via Upstash Redis, then a daily spend cap (configurable via env var) before reaching the AI provider. If the spend cap is hit the bot responds with a polite fallback rather than making further API calls.' },
+    { title: 'TDD for the API surface', detail: 'Rate limit, spend cap, Turnstile verifier and message trimmer all have unit tests. Vitest with mocked Redis and fetch. The static React components do not have tests because that is over-engineering for a portfolio site.' },
+    { title: 'Streaming responses', detail: 'API uses ReadableStream to stream Gemini output back to the browser. The frontend reads chunks via a ReadableStreamDefaultReader and feeds them through a typewriter that drips characters out at randomised intervals so it reads like a person typing.' },
+    { title: 'Single source of truth for content', detail: 'All site copy lives in a single content file. The chatbot system prompt is generated from the same data so the bot can never claim something the site does not say. Adding a new project is one entry in an array.' },
+    { title: 'AI-assisted end to end', detail: 'Built using Claude Code with parallel agents tackling independent tasks while I act as quality gate. The site is a live example of the workflow it describes elsewhere on the page.' },
+  ],
+  newToMe: {
+    intro: 'Things I picked up specifically for this project that were not part of my Scada Systems stack:',
+    items: [
+      { name: 'React 19 with hooks', detail: 'useState, useEffect, useRef and useLocation across the SPA. Coming from vanilla JS this was the biggest jump.' },
+      { name: 'Vite', detail: 'Modern bundler and dev server. Faster than anything I used before. Hot reload that actually works.' },
+      { name: 'Tailwind CSS', detail: 'Utility-first styling instead of writing class names and CSS files. Took a few days to click but I would not go back.' },
+      { name: 'Serverless functions on Vercel', detail: 'Replacing PHP and a traditional server with stateless Node functions that spin up on demand. Different mental model.' },
+      { name: 'Upstash Redis', detail: 'Cloud key-value store for rate limiting and spend tracking. Way more appropriate than spinning up a database for what amounts to a few counters.' },
+      { name: 'Cloudflare Turnstile', detail: 'Invisible bot challenge. Real users never see it, automated abuse gets blocked.' },
+      { name: 'Google Gemini API', detail: 'Used the @google/genai SDK with streaming. Cheaper than Claude for this use case and the responses are good enough.' },
+      { name: 'Vitest with Testing Library', detail: 'TDD workflow for the abuse protection logic. First time properly running TDD on a personal project.' },
+      { name: 'Claude Code subagent workflow', detail: 'Fresh subagent per task with two-stage review. The biggest unlock has been treating subagents like junior developers I am quality gating.' },
+    ],
+  },
+  outcome: 'Live at gascoinlabs.com. The chatbot works, the abuse protection holds, and at this traffic level the whole stack costs essentially nothing to run. More importantly the site is a working example of the AI-assisted workflow I describe rather than just a description of it.',
+  links: [
+    { label: 'View site', href: 'https://gascoinlabs.com' },
+    { label: 'GitHub', href: 'https://github.com/emilegascoin/gascoinlabs' },
+  ],
+}
+
 // Add new projects here — they will appear on the /work index page automatically
 export const projects = [
   {
@@ -146,6 +189,14 @@ export const projects = [
     role: elecdesCaseStudy.role,
     dates: elecdesCaseStudy.dates,
     stack: elecdesCaseStudy.stack,
+  },
+  {
+    href: '/work/gascoinlabs',
+    title: gascoinlabsProject.title,
+    subtitle: gascoinlabsProject.subtitle,
+    role: gascoinlabsProject.role,
+    dates: gascoinlabsProject.dates,
+    stack: gascoinlabsProject.stack,
   },
 ]
 

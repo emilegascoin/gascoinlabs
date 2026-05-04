@@ -1,8 +1,8 @@
-import { elecdesCaseStudy } from '../../lib/content'
+import { gascoinlabsProject } from '../../lib/content'
 import { Link } from 'react-router-dom'
 
-export default function Elecdes() {
-  const c = elecdesCaseStudy
+export default function Gascoinlabs() {
+  const c = gascoinlabsProject
   return (
     <article className="mx-auto max-w-5xl px-6 py-16">
       <Link to="/work" className="text-sm text-muted hover:text-navy">← All projects</Link>
@@ -39,6 +39,19 @@ export default function Elecdes() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="py-12 border-t border-rule">
+        <h2 className="font-serif text-2xl text-navy mb-3">New to me on this project</h2>
+        <p className="text-sm text-muted max-w-prose mb-6 leading-relaxed">{c.newToMe.intro}</p>
+        <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-5">
+          {c.newToMe.items.map((item) => (
+            <li key={item.name} className="border-l-2 border-rule pl-4">
+              <p className="font-mono text-sm text-navy mb-1">{item.name}</p>
+              <p className="text-sm text-muted leading-relaxed">{item.detail}</p>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="py-12 max-w-prose border-t border-rule">
