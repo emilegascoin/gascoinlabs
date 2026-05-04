@@ -3,17 +3,11 @@ import { useLocation } from 'react-router-dom'
 import { getTurnstileToken } from '../lib/turnstileClient'
 import { askEmileWidget } from '../lib/content'
 
-// Minimum time to show the loading dots before typing starts
-const MIN_LOADING_MS = 5000
-
 // Typing speed — randomised per character for a human feel (ms per char)
 function charDelay() {
   return Math.floor(Math.random() * 20) + 8 // 8-28ms, avg ~18ms
 }
 
-function delay(ms) {
-  return new Promise(r => setTimeout(r, ms))
-}
 
 function TypingDots() {
   return (
@@ -113,13 +107,7 @@ export default function Ask() {
 
     let fullResponse
     try {
-      // Fire API call and minimum loading timer at the same time.
-      // We only proceed once BOTH are done — whichever finishes last wins.
-      const [text] = await Promise.all([
-        fetchFullResponse(content, messages, token),
-        delay(MIN_LOADING_MS),
-      ])
-      fullResponse = text
+      fullResponse = await fetchFullResponse(content, messages, token)
     } catch (err) {
       setStreamDisplay(null)
       setMessages([...next, { role: 'assistant', content: err.message || 'Connection error. Email me at emilegascoin@gmail.com.' }])
