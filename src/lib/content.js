@@ -12,7 +12,7 @@ export const profile = {
 
 export const hero = {
   // [PLACEHOLDER] one-line positioning Emile will rewrite
-  headline: 'Software developer building things with AI.',
+  headline: 'Software engineer building things with AI.',
   sub: 'Based in Melbourne. 2.5 years commercial experience across C++ and full-stack web. Looking for a role where AI-assisted development is the standard.',
   ctas: [
     { label: 'Ask Emile', to: '/ask', primary: true },
@@ -23,7 +23,7 @@ export const hero = {
 export const about = {
   // [PLACEHOLDER] short personality-forward paragraph
   paragraphs: [
-    'Software developer with 2.5 years of commercial experience across C++ and full-stack web development. I work extensively with AI-assisted development using Claude Code, running parallel virtual machine environments to manage multiple issues simultaneously and acting as quality gate for AI-generated code.',
+    'Software engineer with 2.5 years of commercial experience across C++ and full-stack web development. I work extensively with AI-assisted development using Claude Code, running parallel virtual machine environments to manage multiple issues simultaneously and acting as quality gate for AI-generated code.',
     'I prefer small teams (under 10), regular check-ins over end-of-task reviews and software product companies over contracting firms. I am drawn to environments where tasks come from team discussion rather than an endless assigned backlog.',
   ],
 }
