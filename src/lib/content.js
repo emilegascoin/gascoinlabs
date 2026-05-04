@@ -16,7 +16,7 @@ export const hero = {
   sub: 'Based in Melbourne. 2.5 years commercial experience across C++ and full-stack web. Looking for a role where AI-assisted development is the standard.',
   ctas: [
     { label: 'Ask Emile', to: '/ask', primary: true },
-    { label: 'View project', to: '/work/elecdes', primary: false },
+    { label: 'View projects', to: '/work', primary: false },
   ],
 }
 
@@ -110,8 +110,9 @@ export const askEmileWidget = {
 
 export const elecdesCaseStudy = {
   title: 'Elecdes Design Suite: marketing site redesign',
+  subtitle: 'Near-complete rework of the Elecdes Design Suite marketing site. New design across software, services, downloads and demonstrations sections with a focus on making sales easier to reach.',
   role: 'Sole designer and developer',
-  dates: 'mid 2025 - early 2026',
+  dates: 'Mid 2025 - Early 2026',
   stack: ['HTML', 'CSS', 'JavaScript', 'PHP', 'MySQL', 'Git'],
   context: 'Scada Systems Ltd needed a modernised marketing site for its Elecdes Design Suite product range. The old site centred on a rotating slider and dense product copy with a single contact form as the only way to reach sales. I was given full autonomy on the redesign and worked across almost every section of the site: software pages, services, downloads and demonstrations. The support section was the only area I did not get to.',
   process: [
@@ -136,7 +137,19 @@ export const elecdesCaseStudy = {
   ],
 }
 
+// Add new projects here — they will appear on the /work index page automatically
+export const projects = [
+  {
+    href: '/work/elecdes',
+    title: elecdesCaseStudy.title,
+    subtitle: elecdesCaseStudy.subtitle,
+    role: elecdesCaseStudy.role,
+    dates: elecdesCaseStudy.dates,
+    stack: elecdesCaseStudy.stack,
+  },
+]
+
 export const all = {
   profile, hero, about, experience, education,
-  aiWorkflow, skills, reference, personal, askEmileWidget, elecdesCaseStudy,
+  aiWorkflow, skills, reference, personal, askEmileWidget, elecdesCaseStudy, projects,
 }

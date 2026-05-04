@@ -10,7 +10,7 @@ export default function Nav() {
         <Link to="/" className="font-serif text-xl text-navy">Emile Gascoin</Link>
         <div className="flex gap-6">
           <NavLink to="/" end className={linkClass}>Home</NavLink>
-          <NavLink to="/work/elecdes" className={linkClass}>Work</NavLink>
+          <NavLink to="/work" className={linkClass}>Work</NavLink>
           <NavLink to="/ask" className={linkClass}>Ask Emile</NavLink>
         </div>
       </nav>
