@@ -27,20 +27,26 @@ export default async function handler(req, res) {
     return
   }
 
-  // 1. Turnstile (soft check — log only, never block).
-  // Real abuse protection is the rate limit and spend cap below. We still
-  // run the verification when a token is present so we can see in logs
-  // which requests came from verified humans vs anonymous traffic.
+  // 1. Turnstile (smart check).
+  //   Token provided AND fails  → block (likely a bot forging a token)
+  //   Token provided AND passes → allow as verified
+  //   No token at all           → allow (user's browser blocked the script,
+  //                                spend cap is the backstop)
   if (turnstileToken) {
     const turnstileOk = await verifyTurnstile(turnstileToken, ip)
     if (!turnstileOk) {
       console.warn('Turnstile verification failed for IP:', ip)
+      res.status(403).json({
+        error: "Looks like a bot. If you're a real person try refreshing the page.",
+      })
+      return
     }
   } else {
     console.info('No Turnstile token provided for IP:', ip)
   }
 
-  // 2. Rate limit
+  // 2. Per-IP rate limit. Set generously to avoid blocking real users.
+  // The spend cap below is the real cost-control backstop.
   const rl = await checkRateLimit(ip)
   if (!rl.allowed) {
     res.status(429).json({
@@ -49,7 +55,7 @@ export default async function handler(req, res) {
     return
   }
 
-  // 3. Spend cap
+  // 3. Daily spend cap
   const spend = await checkSpendCap()
   if (!spend.allowed) {
     res.status(200).setHeader('Content-Type', 'text/plain; charset=utf-8')
