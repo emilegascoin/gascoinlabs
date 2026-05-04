@@ -2,10 +2,10 @@ import { GoogleGenAI } from '@google/genai'
 
 // Pricing as of 2026 — update if Google changes it.
 // Source: https://ai.google.dev/gemini-api/docs/pricing
-// gemini-2.0-flash: $0.10/M input, $0.40/M output (<=200k ctx)
+// gemini-2.5-flash: $0.15/M input, $0.60/M output (<=200k ctx)
 const PRICING = {
-  inputPerMillion: 0.10,
-  outputPerMillion: 0.40,
+  inputPerMillion: 0.15,
+  outputPerMillion: 0.60,
 }
 
 export async function sendGemini({ systemPrompt, messages, signal }) {
@@ -18,7 +18,7 @@ export async function sendGemini({ systemPrompt, messages, signal }) {
   }))
 
   const response = await ai.models.generateContentStream({
-    model: 'gemini-2.0-flash',
+    model: 'gemini-2.5-flash',
     contents,
     config: {
       systemInstruction: systemPrompt,
