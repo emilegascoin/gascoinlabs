@@ -89,6 +89,13 @@ export const reference = {
 export const personal = {
   whyMelbourne: 'I fell in love with the culture. Every suburb has its own vibe and atmosphere, like visiting a new town each time. Job wise the tech scene here has been advancing rapidly and I wanted to be part of it and grow as a developer from being immersed in it.',
   hobbies: 'Gaming, building and fixing computers, going to the gym, running and music. I listen to music every day without fail. I have dabbled in making it with FL Studio but have never actually finished a song. Before moving to Melbourne I played squash a bit too.',
+  whySoftware: 'My passion for computers started from a very young age and always pointed me toward this career. The maintenance technician and barista roles came before my degree. They were not a detour, just where I was before I had the qualifications to pursue what I always wanted to do.',
+  previousRoles: 'At Air Solutions I applied technical thinking to real problems: measuring air outflow and humidity to find the right solutions. It gave me a practical understanding of applying analytical thinking in the field. At Karajoz Coffee Company I was client facing every day which built my communication and people skills. It also taught me to work under pressure. Some shifts were quiet and then 30 people would walk in at once and I had to deliver, fast and without dropping quality.',
+  uniGroupProject: 'In my Programming with Web Technologies paper at the University of Auckland I worked on a group project building a full stack blog platform with authentication, article management and a comments system. I led the backend architecture and took on a senior role within the group given I had more commercial experience than my teammates. I supported others with debugging and integration across the full stack.',
+  boxheadGame: 'In my third year at Victoria University of Wellington I built a Java recreation of the flash game BoxHead for a computer graphics paper. Fully functional with enemy AI, multiple weapon types, loot mechanics and escalating difficulty rounds. I built it because I grew up playing the original and wanted to recreate it. GitHub: github.com/emilegascoin',
+  workingStyle: 'I thrive with regular communication and collaboration on projects rather than working in isolation through an assigned backlog. Stand-up culture and check-ins between team members to get the best result is ideal. I manage my focus by setting daily tasks and ordering them by order of magnitude. I have the ability to hyper focus when I am locked in on a problem which I consider a strength.',
+  careerAmbitions: 'Long term I want to start my own software company and build something widely used. That is a long way off. I want to build up enough experience first to do it properly. Right now I am focused on finding the right role in Melbourne, joining a good team and growing as a developer.',
+  personality: 'Direct, genuine and pretty low on corporate fluff. I say what I mean. I care more about the output than the credit and I work best when the people around me do too.',
 }
 
 export const askEmileWidget = {
@@ -102,12 +109,11 @@ export const askEmileWidget = {
 }
 
 export const elecdesCaseStudy = {
-  // [PLACEHOLDER] Emile to flesh out
   title: 'Elecdes Design Suite: marketing site redesign',
   role: 'Sole designer and developer',
   dates: 'Mid 2025 - early 2026',
   stack: ['HTML', 'CSS', 'JavaScript', 'PHP', 'MySQL', 'Git'],
-  context: 'Scada Systems Ltd needed a modernised marketing site for its Elecdes Design Suite product range. The old site centred on a rotating slider and dense product copy with a single contact form as the only way to reach sales. I was given full autonomy on the redesign and worked across almost every section of the site — software pages, services, downloads and demonstrations. The support section was the only area I did not get to.',
+  context: 'Scada Systems Ltd needed a modernised marketing site for its Elecdes Design Suite product range. The old site centred on a rotating slider and dense product copy with a single contact form as the only way to reach sales. I was given full autonomy on the redesign and worked across almost every section of the site: software pages, services, downloads and demonstrations. The support section was the only area I did not get to.',
   process: [
     'Pitched an initial design: clean hero, category tiles, customer logos, a case study and outcome-driven copy.',
     'Reworked the design to fit feedback from the company director, who wanted slightly more density on the homepage and the customer portal surfaced more aggressively.',

@@ -44,6 +44,14 @@ ${Object.entries(skills).map(([g, items]) => `${g}: ${items.join(', ')}`).join('
 
 PERSONAL
 - Why Melbourne? ${personal.whyMelbourne}
+- Hobbies: ${personal.hobbies}
+- Why software development? ${personal.whySoftware}
+- Previous non-tech roles: ${personal.previousRoles}
+- University group project: ${personal.uniGroupProject}
+- BoxHead game project: ${personal.boxheadGame}
+- Working style: ${personal.workingStyle}
+- Career ambitions: ${personal.careerAmbitions}
+- Personality: ${personal.personality}
 
 REFERENCE QUOTE
 "${reference.quote}" — ${reference.attribution} (${reference.date})
