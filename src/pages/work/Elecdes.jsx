@@ -8,7 +8,7 @@ export default function Elecdes() {
       <Link to="/" className="text-sm text-muted hover:text-navy">← Back home</Link>
 
       <header className="mt-8 pb-10 border-b border-rule">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted mb-3">Case study</p>
+        <p className="font-mono text-xs uppercase tracking-widest text-muted mb-3">Project</p>
         <h1 className="font-serif text-4xl sm:text-5xl text-navy leading-tight">{c.title}</h1>
         <dl className="mt-6 grid sm:grid-cols-3 gap-4 text-sm">
           <div><dt className="text-muted text-xs">Role</dt><dd>{c.role}</dd></div>
@@ -33,7 +33,7 @@ export default function Elecdes() {
       </section>
 
       <section className="py-12 border-t border-rule">
-        <h2 className="font-serif text-2xl text-navy mb-6">Features shipped</h2>
+        <h2 className="font-serif text-2xl text-navy mb-6">What I worked on</h2>
         <div className="grid sm:grid-cols-2 gap-6">
           {c.features.map((f) => (
             <div key={f.title} className="border border-rule rounded-lg p-5 bg-cream">

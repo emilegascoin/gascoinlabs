@@ -12,11 +12,11 @@ export const profile = {
 
 export const hero = {
   // [PLACEHOLDER] one-line positioning Emile will rewrite
-  headline: 'Software engineer building things with AI.',
+  headline: 'Software engineer. Experienced with real code, faster with AI.',
   sub: 'Based in Melbourne. 2.5 years commercial experience across C++ and full-stack web. Looking for a role where AI-assisted development is the standard.',
   ctas: [
-    { label: 'Ask Emile', to: '/ask', primary: true },
-    { label: 'View work', to: '/work/elecdes', primary: false },
+    { label: 'Ask Emile', to: '/ask/#', primary: true },
+    { label: 'View project', to: '/work/elecdes', primary: false },
   ],
 }
 
@@ -115,7 +115,7 @@ export const elecdesCaseStudy = {
   stack: ['HTML', 'CSS', 'JavaScript', 'PHP', 'MySQL', 'Git'],
   context: 'Scada Systems Ltd needed a modernised marketing site for its Elecdes Design Suite product range. The old site centred on a rotating slider and dense product copy with a single contact form as the only way to reach sales. I was given full autonomy on the redesign and worked across almost every section of the site: software pages, services, downloads and demonstrations. The support section was the only area I did not get to.',
   process: [
-    'Pitched an initial design: clean hero, category tiles, customer logos, a case study and outcome-driven copy.',
+    'Pitched an initial design: clean hero, category tiles, customer logos, a BlueScope Steel feature section and outcome-driven copy.',
     'Reworked the design to fit feedback from the company director, who wanted slightly more density on the homepage and the customer portal surfaced more aggressively.',
     'Iterated on layout and copy with weekly check-ins, deploying to a beta server (beta.elecdes.com) for review.',
   ],

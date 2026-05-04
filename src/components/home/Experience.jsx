@@ -30,7 +30,7 @@ export default function Experience() {
                   to={job.caseStudyHref}
                   className="inline-block mt-5 text-sm text-navy underline underline-offset-4 hover:text-navy-dark"
                 >
-                  Read the case study →
+                  Read about the website development →
                 </Link>
               )}
             </div>
