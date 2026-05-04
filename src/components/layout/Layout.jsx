@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom'
 import Nav from './Nav'
 import Footer from './Footer'
 import ChatWidget from './ChatWidget'
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/react"
 
 export default function Layout() {
   return (
@@ -11,6 +11,7 @@ export default function Layout() {
       <Outlet />
       <Footer />
       <ChatWidget />
+      <Analytics />
     </>
   )
 }
