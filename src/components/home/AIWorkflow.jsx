@@ -14,9 +14,6 @@ export default function AIWorkflow() {
           </li>
         ))}
       </ol>
-      <p className="mt-10 max-w-prose text-sm text-muted italic">
-        Curious how this works in practice? Try the chat widget — it's grounded in this same context.
-      </p>
     </section>
   )
 }

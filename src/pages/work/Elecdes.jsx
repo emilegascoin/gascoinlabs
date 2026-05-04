@@ -27,9 +27,6 @@ export default function Elecdes() {
         <ol className="space-y-3 list-decimal list-inside">
           {c.process.map((p, i) => <li key={i} className="leading-relaxed">{p}</li>)}
         </ol>
-        <p className="mt-6 text-sm text-muted italic">
-          [Initial design screenshot and final design screenshot will be inserted here once Emile drops the images into <code>public/work/elecdes/</code>.]
-        </p>
       </section>
 
       <section className="py-12 border-t border-rule">

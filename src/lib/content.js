@@ -111,7 +111,7 @@ export const askEmileWidget = {
 export const elecdesCaseStudy = {
   title: 'Elecdes Design Suite: marketing site redesign',
   role: 'Sole designer and developer',
-  dates: 'Mid 2025 - early 2026',
+  dates: 'mid 2025 - early 2026',
   stack: ['HTML', 'CSS', 'JavaScript', 'PHP', 'MySQL', 'Git'],
   context: 'Scada Systems Ltd needed a modernised marketing site for its Elecdes Design Suite product range. The old site centred on a rotating slider and dense product copy with a single contact form as the only way to reach sales. I was given full autonomy on the redesign and worked across almost every section of the site: software pages, services, downloads and demonstrations. The support section was the only area I did not get to.',
   process: [
