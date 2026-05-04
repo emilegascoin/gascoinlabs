@@ -34,11 +34,12 @@ export async function getTurnstileToken() {
       try { document.body.removeChild(container) } catch {}
     }
 
-    // Safety net — if the widget never fires, don't hang forever
+    // Safety net — if the widget never fires, fail fast so the caller can
+    // proceed without a token rather than making the user wait
     const timeout = setTimeout(() => {
       cleanup()
       reject(new Error('Turnstile timed out'))
-    }, 15000)
+    }, 7000)
 
     widgetId = window.turnstile.render(container, {
       sitekey: siteKey,

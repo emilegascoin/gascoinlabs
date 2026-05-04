@@ -8,6 +8,13 @@ function charDelay() {
   return Math.floor(Math.random() * 20) + 8 // 8-28ms, avg ~18ms
 }
 
+// Adaptive typewriter step. If the buffer is much bigger than what's been
+// shown, type a few chars per tick so we don't fall behind on a fast stream.
+function typewriterStep(charsBehind) {
+  if (charsBehind > 100) return 3
+  if (charsBehind > 40) return 2
+  return 1
+}
 
 function TypingDots() {
   return (
@@ -17,30 +24,6 @@ function TypingDots() {
       <span className="w-1.5 h-1.5 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }} />
     </span>
   )
-}
-
-// Collects the full streamed response into a string
-async function fetchFullResponse(content, history, token) {
-  const res = await fetch('/api/ask', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: content, history, turnstileToken: token }),
-  })
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}))
-    throw new Error(err.error || 'Something went wrong on my end.')
-  }
-
-  const reader = res.body.getReader()
-  const decoder = new TextDecoder()
-  let acc = ''
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) break
-    acc += decoder.decode(value, { stream: true })
-  }
-  return acc
 }
 
 export default function Ask() {
@@ -65,26 +48,6 @@ export default function Ask() {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, streamDisplay])
 
-  // Types out fullText character by character and resolves when done
-  function typewriterWrite(fullText) {
-    return new Promise(resolve => {
-      let pos = 0
-
-      function tick() {
-        pos++
-        setStreamDisplay(fullText.slice(0, pos))
-        if (pos >= fullText.length) {
-          typewriterRef.current = null
-          resolve()
-        } else {
-          typewriterRef.current = setTimeout(tick, charDelay())
-        }
-      }
-
-      typewriterRef.current = setTimeout(tick, charDelay())
-    })
-  }
-
   async function send(content) {
     if (!content.trim() || pending) return
     setPending(true)
@@ -95,32 +58,89 @@ export default function Ask() {
     // Show dots right away — before token fetch or API call
     setStreamDisplay('')
 
-    let token
+    // Try to get a Turnstile token but never block on it.
+    // The rate limit and spend cap are the real abuse protection.
+    let token = null
     try {
       token = await getTurnstileToken()
-    } catch {
-      setStreamDisplay(null)
-      setMessages([...next, { role: 'assistant', content: "Couldn't verify the request. Try refreshing." }])
-      setPending(false)
-      return
-    }
-
-    let fullResponse
-    try {
-      fullResponse = await fetchFullResponse(content, messages, token)
     } catch (err) {
-      setStreamDisplay(null)
-      setMessages([...next, { role: 'assistant', content: err.message || 'Connection error. Email me at emilegascoin@gmail.com.' }])
-      setPending(false)
-      return
+      console.warn('Turnstile token unavailable, continuing without:', err?.message)
     }
 
-    // Dots phase done — type out the response
-    await typewriterWrite(fullResponse)
+    // Shared state between the streamer and the typewriter.
+    // The streamer fills `buffer` with whatever Gemini sends. The typewriter
+    // drips characters from `buffer` to the display at human-typing speed,
+    // catching up faster if it falls behind.
+    const state = {
+      buffer: '',
+      displayed: 0,
+      done: false,
+      error: null,
+    }
 
-    // Lock in the final text to the message history
+    // Streamer: receives chunks from the API into the shared buffer
+    async function runStreamer() {
+      try {
+        const res = await fetch('/api/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: content,
+            history: messages,
+            turnstileToken: token,
+          }),
+        })
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}))
+          throw new Error(err.error || 'Something went wrong on my end.')
+        }
+
+        const reader = res.body.getReader()
+        const decoder = new TextDecoder()
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+          state.buffer += decoder.decode(value, { stream: true })
+        }
+      } catch (err) {
+        state.error = err
+      } finally {
+        state.done = true
+      }
+    }
+
+    // Typewriter: drips characters from buffer to the display.
+    // Resolves only once the stream is done AND we've caught up.
+    function runTypewriter() {
+      return new Promise(resolve => {
+        const tick = () => {
+          if (state.displayed < state.buffer.length) {
+            const behind = state.buffer.length - state.displayed
+            const step = typewriterStep(behind)
+            state.displayed = Math.min(state.displayed + step, state.buffer.length)
+            setStreamDisplay(state.buffer.slice(0, state.displayed))
+          }
+          if (state.done && state.displayed >= state.buffer.length) {
+            typewriterRef.current = null
+            resolve()
+          } else {
+            typewriterRef.current = setTimeout(tick, charDelay())
+          }
+        }
+        typewriterRef.current = setTimeout(tick, charDelay())
+      })
+    }
+
+    // Run both concurrently. Promise.all resolves when both have finished.
+    await Promise.all([runStreamer(), runTypewriter()])
+
     setStreamDisplay(null)
-    setMessages([...next, { role: 'assistant', content: fullResponse }])
+    if (state.error) {
+      setMessages([...next, { role: 'assistant', content: state.error.message || 'Connection error. Email me at emilegascoin@gmail.com.' }])
+    } else {
+      setMessages([...next, { role: 'assistant', content: state.buffer }])
+    }
     setPending(false)
   }
 

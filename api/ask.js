@@ -27,11 +27,17 @@ export default async function handler(req, res) {
     return
   }
 
-  // 1. Turnstile
-  const turnstileOk = await verifyTurnstile(turnstileToken, ip)
-  if (!turnstileOk) {
-    res.status(403).json({ error: 'Verification failed' })
-    return
+  // 1. Turnstile (soft check — log only, never block).
+  // Real abuse protection is the rate limit and spend cap below. We still
+  // run the verification when a token is present so we can see in logs
+  // which requests came from verified humans vs anonymous traffic.
+  if (turnstileToken) {
+    const turnstileOk = await verifyTurnstile(turnstileToken, ip)
+    if (!turnstileOk) {
+      console.warn('Turnstile verification failed for IP:', ip)
+    }
+  } else {
+    console.info('No Turnstile token provided for IP:', ip)
   }
 
   // 2. Rate limit
