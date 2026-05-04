@@ -34,11 +34,17 @@ export async function getTurnstileToken() {
       try { document.body.removeChild(container) } catch {}
     }
 
+    // Safety net — if the widget never fires, don't hang forever
+    const timeout = setTimeout(() => {
+      cleanup()
+      reject(new Error('Turnstile timed out'))
+    }, 15000)
+
     widgetId = window.turnstile.render(container, {
       sitekey: siteKey,
-      callback: (token) => { cleanup(); resolve(token) },
-      'error-callback': () => { cleanup(); reject(new Error('Turnstile error')) },
-      'expired-callback': () => { cleanup(); reject(new Error('Turnstile expired')) },
+      callback: (token) => { clearTimeout(timeout); cleanup(); resolve(token) },
+      'error-callback': () => { clearTimeout(timeout); cleanup(); reject(new Error('Turnstile error')) },
+      'expired-callback': () => { clearTimeout(timeout); cleanup(); reject(new Error('Turnstile expired')) },
     })
   })
 }
