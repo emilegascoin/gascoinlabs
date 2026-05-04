@@ -15,7 +15,7 @@ export const hero = {
   headline: 'Software engineer. Experienced with real code, faster with AI.',
   sub: 'Based in Melbourne. 2.5 years commercial experience across C++ and full-stack web. Looking for a role where AI-assisted development is the standard.',
   ctas: [
-    { label: 'Ask Emile', to: '/ask/#', primary: true },
+    { label: 'Ask Emile', to: '/ask', primary: true },
     { label: 'View project', to: '/work/elecdes', primary: false },
   ],
 }
