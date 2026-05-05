@@ -1,6 +1,3 @@
-// All site copy + chatbot grounding source. Emile owns this file.
-// Placeholder copy is marked [PLACEHOLDER] — replace before launch.
-
 export const profile = {
   name: 'Emile Gascoin',
   email: 'emilegascoin@gmail.com',
@@ -11,7 +8,6 @@ export const profile = {
 }
 
 export const hero = {
-  // [PLACEHOLDER] one-line positioning Emile will rewrite
   headline: 'Software engineer. Experienced with real code, faster with AI.',
   sub: 'Based in Melbourne. 2.5 years commercial experience across C++ and full-stack web. Looking for a role where AI-assisted development is the standard.',
   ctas: [
@@ -21,10 +17,10 @@ export const hero = {
 }
 
 export const about = {
-  // [PLACEHOLDER] short personality-forward paragraph
   paragraphs: [
-    'Software engineer with 2.5 years of commercial experience across C++ and full-stack web development. I work extensively with AI-assisted development using Claude Code, running parallel virtual machine environments to manage multiple issues simultaneously and acting as quality gate for AI-generated code.',
-    'I prefer small teams (under 10), regular check-ins over end-of-task reviews and software product companies over contracting firms. I am drawn to environments where tasks come from team discussion rather than an endless assigned backlog.',
+    'I am a software developer with 2.5 years of commercial experience across C++ and full stack web development. I work with AI tools as a genuine part of how I develop, not as a shortcut. My job is to brainstorm, steer the output and make sure what gets built is actually good.',
+    'I am looking for a role in Melbourne where I can keep growing. Stack and industry matter less to me than the team and the culture. I want to work somewhere with regular communication, a stand-up or check-in rhythm and tasks that come from team discussion rather than a pile of tickets assigned in isolation. Small teams suit me best but I am open to larger companies as long as the immediate team has that dynamic.',
+    'Outside of work I build and fix computers, go to the gym, follow the tech and AI space and listen to music every day. I moved to Melbourne because every suburb has its own character and the tech scene here is somewhere I genuinely want to grow into.',
   ],
 }
 
