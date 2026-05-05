@@ -14,5 +14,5 @@ export async function recordSpend(costUsd) {
   if (!costUsd || costUsd <= 0) return
   const redis = getRedis()
   await redis.incrbyfloat(KEY(), costUsd)
-  await redis.expire(KEY(), 86400)
+  await redis.expire(KEY(), 43200)
 }

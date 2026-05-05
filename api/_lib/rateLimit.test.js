@@ -26,7 +26,7 @@ describe('checkRateLimit', () => {
   it('sets TTL on first request', async () => {
     mockIncr.mockResolvedValue(1)
     await checkRateLimit('1.2.3.4')
-    expect(mockExpire).toHaveBeenCalledWith('ratelimit:1.2.3.4:2026-04-27', 86400)
+    expect(mockExpire).toHaveBeenCalledWith('ratelimit:1.2.3.4:2026-04-27', 43200)
   })
 
   it('does not reset TTL on subsequent requests', async () => {

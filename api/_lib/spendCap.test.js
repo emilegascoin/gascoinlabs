@@ -52,6 +52,6 @@ describe('recordSpend', () => {
   it('sets TTL', async () => {
     mockIncrbyfloat.mockResolvedValue('0.05')
     await recordSpend(0.05)
-    expect(mockExpire).toHaveBeenCalledWith('spend:2026-04-27', 86400)
+    expect(mockExpire).toHaveBeenCalledWith('spend:2026-04-27', 43200)
   })
 })

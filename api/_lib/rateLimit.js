@@ -6,7 +6,7 @@ export async function checkRateLimit(ip) {
   const key = todayKey(`ratelimit:${ip}`)
   const count = await redis.incr(key)
   if (count === 1) {
-    await redis.expire(key, 86400)
+    await redis.expire(key, 43200)
   }
   return {
     allowed: count <= limit,
