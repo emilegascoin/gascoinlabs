@@ -154,7 +154,7 @@ export default function Ask() {
       <header className="mb-8">
         <p className="font-mono text-xs uppercase tracking-widest text-muted mb-2">/ask</p>
         <h1 className="font-serif text-3xl text-navy">Ask Emile</h1>
-        <p className="text-sm text-muted mt-2">Grounded in my CV and notes. If I don't know, I'll tell you.</p>
+        <p className="text-sm text-muted mt-2">The next best thing to actually talking to me.</p>
       </header>
 
       {messages.length === 0 && streamDisplay === null && (
