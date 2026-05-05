@@ -4,7 +4,7 @@
 
 ---
 
-I'm continuing work on my personal portfolio website. The repo is on GitHub at https://github.com/emilegascoin/gascoinlabs and deployed via Vercel. I'm switching machines for this session.
+I'm continuing work on my personal portfolio website. The repo is on GitHub at https://github.com/emilegascoin/gascoinlabs and the live site is at https://gascoinlabs.com (deployed via Vercel, auto-deploys from `main`). I'm switching machines for this session.
 
 ## First step: clone the repo locally
 
@@ -14,84 +14,83 @@ cd gascoinlabs
 npm install
 ```
 
+Then copy `.env.example` to `.env.local` and fill in values from the Vercel dashboard.
+
 ## Project overview
 
-- **Domain:** gascoinlabs.com (purchased through Porkbun)
-- **Stack:** React + Vite, Tailwind, React Router, Vercel Serverless Functions, Vitest
-- **AI provider:** Provider-agnostic adapter at `src/lib/aiProvider.js`. Default = Gemini Flash. Claude swappable via `AI_PROVIDER` env var.
-- **Storage:** Upstash Redis (rate limit + spend tracking)
-- **Bot protection:** Cloudflare Turnstile (invisible/managed mode)
-- **Hosting:** Vercel (single project, auto-deploys from main)
+- **Domain:** gascoinlabs.com (Porkbun, with Porkbun nameservers, DNS records pointing at Vercel — fully live)
+- **Stack:** React 19 + Vite, Tailwind, React Router, Vercel Serverless Functions (Node), Vitest
+- **AI provider:** Provider-agnostic adapter at `src/lib/aiProvider.js`. Default = Gemini 2.5 Flash. Claude swappable via `AI_PROVIDER` env var.
+- **Storage:** Upstash Redis (rate limit counters + daily spend tracking)
+- **Bot protection:** Cloudflare Turnstile in smart mode (see chatbot section below)
+- **Hosting:** Vercel (single project, billing-enabled Google Cloud project for Gemini)
+- **Analytics:** Vercel Analytics (`@vercel/analytics/react`)
 
-## What's been built (32-task plan, fully shipped)
+## How the chatbot works (current state)
 
-- Single-scroll home with 8 sections (`/`)
-- Elecdes case study (`/work/elecdes`)
-- Floating "Ask Emile" widget on every page that routes to `/ask` with prefilled prompt
-- `/ask` full chat page with streaming + invisible Turnstile token grab
-- `/api/ask` Vercel function: Turnstile verify, per-IP rate limit (20/day), daily spend cap ($1/day, configurable), token trim, AI call, record spend
-- `/api/health`
-- All abuse protection utilities are TDD'd. 32 tests passing.
-- Site copy lives in `src/lib/content.js` as the single source of truth (also feeds chatbot grounding context via `src/lib/claudeContext.js`)
+The `/api/ask` endpoint runs in this order:
+
+1. **Turnstile (smart check)** — if a token is provided AND fails verification we block with a "looks like a bot" message. If no token at all is provided we allow the request (real users with privacy extensions blocking the script). Verified tokens pass through.
+2. **Per-IP rate limit** — 150 requests/day per IP via Upstash Redis. Generous so real users never hit it. `RATE_LIMIT_PER_DAY` env var.
+3. **Daily spend cap** — global $1/day in Redis. Polite fallback message when hit. `DAILY_SPEND_CAP_USD` env var.
+4. **Token trim** — keeps recent messages under a token budget.
+5. **AI provider** — streams Gemini chunks back to the client.
+6. **Record spend** — logs cost back to Redis after the stream completes.
+
+The frontend (`src/pages/Ask.jsx`) reads chunks live and pipes them into a typewriter effect with adaptive speed (`charDelay()` and `typewriterStep()` at the top of the file). Loading dots show while waiting for the first chunk, then a blinking cursor while typing.
+
+## What's been built
+
+- Live site at https://gascoinlabs.com with all routes working
+- Home page (`/`) with hero, about, experience, education, AI workflow, skills, reference, contact
+- `/work` projects index page that pulls from a `projects` array in `content.js`. Adding a new project is one entry plus a page file.
+- `/work/elecdes` — Elecdes Design Suite redesign project page
+- `/work/gascoinlabs` — this site's own project page, includes a "New to me on this project" section listing what I picked up beyond my Scada stack
+- `/ask` — full chat page with smart Turnstile, streaming responses and typewriter effect
+- Floating "Ask Emile" widget on every page (except `/ask` itself) that routes to `/ask` with prefilled prompt
+- `/api/ask` and `/api/health` serverless functions
+- TDD for the API surface — rate limit, spend cap, Turnstile verifier and message trimmer all have Vitest tests
+- Site copy lives in `src/lib/content.js` as the single source of truth. The chatbot system prompt is generated from the same data via `src/lib/claudeContext.js`, so the bot can never claim something the site does not say.
+- Personal context expanded so the bot can answer questions like "why software development", "what did you do before tech", "why Melbourne", "how do you work", etc.
+- Font loading optimised with preconnect to fonts.gstatic.com so there is no FOUT flash
+- ScrollToTop component on every route change
 
 ## Read these for full context
 
-- `docs/superpowers/specs/2026-04-27-personal-website-design.md` — design spec
-- `docs/superpowers/plans/2026-04-27-personal-website-implementation.md` — 32-task implementation plan
-- `CLAUDE.md` — project brief, tone rules, AI workflow context
-
-## Current state — where I'm stuck
-
-The site is deployed on the ugly Vercel URL but I'm in the middle of connecting `gascoinlabs.com`. Nameservers were a mess (mixed Cloudflare + Vercel + Porkbun). I've just set them back to Porkbun's defaults (curitiba/fortaleza/maceio/salvador.ns.porkbun.com) and DNS is propagating.
-
-The Porkbun DNS panel currently has these records:
-
-- A (host blank) → 76.76.21.21
-- CNAME www → cname.vercel-dns.com
-- TXT records for SPF and ACME challenge — keep, don't touch
-
-Also: there was a Turnstile bug — `size: 'invisible'` is no longer valid in Cloudflare's API. The fix is in `src/lib/turnstileClient.js` and committed/pushed. The widget mode now needs to be set in the Cloudflare dashboard instead (Managed or Invisible).
+- `CLAUDE.md` — project brief, about me, tone rules, AI workflow context
+- `src/lib/content.js` — single source of truth for all site copy
+- `src/lib/claudeContext.js` — how the system prompt is built from content
+- `docs/superpowers/specs/2026-04-27-personal-website-design.md` — original design spec
+- `docs/superpowers/plans/2026-04-27-personal-website-implementation.md` — original 32-task plan (largely shipped)
 
 ## What's left to do
 
-1. **Verify DNS has propagated:**
+1. **Drop project assets** into `public/work/elecdes/` (before/after screenshots of elecdes.com vs beta.elecdes.com hero, category tiles, BlueScope feature etc.). Then wire them into `src/pages/work/Elecdes.jsx` where the placeholder note currently sits.
+2. **Decide where to put the Whisper transcription tool** on the site. It was used at Scada Systems for video subtitles, separate from the elecdes redesign. Maybe its own project page under `/work` or a sidebar mention on the elecdes page. Currently mentioned in the experience bullet only.
+3. **Recruiter feedback** — waiting on a recruiter to give input on the site. Likely will trigger copy tweaks across hero, about, project pages.
+4. **Optional later** — Anthropic/Claude provider activation. The adapter is ready, just need an Anthropic API key in env vars and `AI_PROVIDER=claude`.
 
-   ```bash
-   dig NS gascoinlabs.com +short
-   dig gascoinlabs.com +short
-   dig www.gascoinlabs.com +short
-   ```
+## Workflow preferences (important)
 
-   Should show 4x porkbun.com nameservers, then 76.76.21.21, then cname.vercel-dns.com.
-
-2. **Confirm Cloudflare Turnstile widget mode** is set to "Managed" or "Invisible" in the Cloudflare dashboard, and that `gascoinlabs.com` is on the hostname allowlist.
-
-3. **Smoke-test the live site** at gascoinlabs.com — home page, case study, chat widget, /ask page, and `/api/health`.
-
-4. **Replace placeholder copy** in `src/lib/content.js`. Anything marked `[PLACEHOLDER]` is mine to rewrite. Sections to rework: hero, about, AI workflow, widget greeting + chips, reference quote.
-
-5. **Drop case study assets** into `public/work/elecdes/` (initial design screenshot, before/after of elecdes.com hero, anything for the Whisper transcription tool subsection). Then we wire them into `src/pages/work/Elecdes.jsx`.
-
-6. **Optionally** later: Anthropic/Claude provider activation once my Australian TFN clears for billing.
-
-## Secrets I'll handle myself
-
-All env vars are in Vercel dashboard (Production + Preview) and in `.env.local` on my Mac. I'll set up `.env.local` on this PC by copying `.env.example` and filling in values. Don't ask me to share secrets in chat — I rotated the original ones after pasting them once.
+- **I am the senior developer.** When you make code changes, prep the commit and STAGE them with `git add`, then stop and let me review and push. Do not run `git commit` or `git push` yourself unless I explicitly ask.
+- Subagent-driven development for non-trivial work. Fresh subagent per task, two-stage review (spec compliance, then code quality).
+- One logical change per commit so the history is readable.
+- TDD for API/protection logic. Not for static React components — that is over-engineering for a portfolio site.
+- I am still learning React and modern web dev. Explain things when relevant. I will ask about commits I do not understand.
 
 ## Tone rules for any new copy
 
-- No em dashes
+- No em dashes (use a colon, full stop or comma instead). Date ranges with — are fine.
 - No Oxford commas
 - No corporate fluff
 - Direct, conversational, short
-- Don't overclaim on minor contributions
+- Do not overclaim on minor contributions
+- Verify against the actual sites or sources before writing case study content. The original is at https://elecdes.com and my redesign is at https://beta.elecdes.com.
 
-## Workflow preferences
+## Secrets
 
-- Subagent-driven development for non-trivial work — fresh subagent per task, two-stage review (spec compliance, then code quality).
-- Frequent commits, one logical change per commit.
-- TDD for API/protection logic, not for static React components.
+All env vars are set in the Vercel dashboard for Production and Preview. I will set up `.env.local` locally by copying `.env.example` and filling in values myself. Do not ask me to paste secrets into chat.
 
 ## Start here
 
-Help me verify DNS is propagated, then move to the smoke test.
+Ask me what I want to work on next. Likely candidates: project assets, recruiter feedback once it lands, Whisper tool placement, or polishing existing copy.
