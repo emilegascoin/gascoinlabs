@@ -5,6 +5,7 @@ export const profile = {
   github: 'https://github.com/emilegascoin',
   location: 'Melbourne, VIC',
   availability: 'Available now',
+  linkedin: 'https://linkedin.com/in/emilegascoin',
 }
 
 export const hero = {

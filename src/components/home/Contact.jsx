@@ -12,6 +12,9 @@ export default function Contact() {
         <dt className="font-mono text-xs uppercase tracking-widest text-muted">Phone</dt>
         <dd>{profile.phone}</dd>
 
+        <dt className="font-mono text-xs uppercase tracking-widest text-muted">LinkedIn</dt>
+        <dd><a href={profile.linkedin} className="text-navy underline underline-offset-4" target="_blank" rel="noreferrer">{profile.linkedin.replace('https://', '')}</a></dd>
+        
         <dt className="font-mono text-xs uppercase tracking-widest text-muted">GitHub</dt>
         <dd><a href={profile.github} className="text-navy underline underline-offset-4" target="_blank" rel="noreferrer">{profile.github.replace('https://', '')}</a></dd>
 
