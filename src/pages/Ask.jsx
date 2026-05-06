@@ -96,6 +96,15 @@ export default function Ask() {
           throw new Error(err.error || 'Something went wrong on my end.')
         }
 
+        // Some in-app browsers (Messenger, LinkedIn) don't support
+        // ReadableStream. Fall back to reading the full response at once —
+        // the typewriter still runs, it just won't start until the full
+        // response arrives.
+        if (!res.body || typeof res.body.getReader !== 'function') {
+          state.buffer = await res.text()
+          return
+        }
+
         const reader = res.body.getReader()
         const decoder = new TextDecoder()
         while (true) {
@@ -119,7 +128,9 @@ export default function Ask() {
             const behind = state.buffer.length - state.displayed
             const step = typewriterStep(behind)
             state.displayed = Math.min(state.displayed + step, state.buffer.length)
-            setStreamDisplay(state.buffer.slice(0, state.displayed))
+            // trimStart so a leading newline from the model shows as dots
+            // rather than a blank line while the real content loads
+            setStreamDisplay(state.buffer.slice(0, state.displayed).trimStart())
           }
           if (state.done && state.displayed >= state.buffer.length) {
             typewriterRef.current = null
@@ -137,9 +148,15 @@ export default function Ask() {
 
     setStreamDisplay(null)
     if (state.error) {
-      setMessages([...next, { role: 'assistant', content: state.error.message || 'Connection error. Email me at emilegascoin@gmail.com.' }])
+      const partial = state.buffer.trim()
+      // If we got partial content before the error, show it with a short note
+      // rather than replacing everything with a generic error message.
+      const content = partial
+        ? `${partial}\n\n(Something cut out there — email me at emilegascoin@gmail.com if it keeps happening.)`
+        : (state.error.message || 'Something went wrong on my end. Email me at emilegascoin@gmail.com.')
+      setMessages([...next, { role: 'assistant', content: content.trim() }])
     } else {
-      setMessages([...next, { role: 'assistant', content: state.buffer }])
+      setMessages([...next, { role: 'assistant', content: state.buffer.trim() }])
     }
     setPending(false)
   }
