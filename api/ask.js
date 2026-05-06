@@ -8,6 +8,7 @@ import { aiProvider } from '../src/lib/aiProvider.js'
 import { buildSystemPrompt } from '../src/lib/claudeContext.js'
 
 const FALLBACK_SPEND_CAP = "Ask Emile is taking a break for today. Email me at emilegascoin@gmail.com and I'll get back to you when I've had a think."
+const SYSTEM_PROMPT = buildSystemPrompt()
 
 function getIp(req) {
   const fwd = req.headers['x-forwarded-for']
@@ -47,9 +48,9 @@ export default async function handler(req, res) {
     console.info('No Turnstile token provided for IP:', ip)
   }
 
-  // 2. Per-IP rate limit. Set generously to avoid blocking real users.
-  // The spend cap below is the real cost-control backstop.
-  const rl = await checkRateLimit(ip)
+  // 2 + 3. Rate limit and spend cap — run in parallel to cut Redis round trips
+  const [rl, spend] = await Promise.all([checkRateLimit(ip), checkSpendCap()])
+
   if (!rl.allowed) {
     res.status(429).json({
       error: "You've hit today's limit. Email me at emilegascoin@gmail.com if you've got more questions.",
@@ -57,8 +58,6 @@ export default async function handler(req, res) {
     return
   }
 
-  // 3. Daily spend cap
-  const spend = await checkSpendCap()
   if (!spend.allowed) {
     res.status(200).setHeader('Content-Type', 'text/plain; charset=utf-8')
     res.write(FALLBACK_SPEND_CAP)
@@ -70,9 +69,8 @@ export default async function handler(req, res) {
   logChat(req, message)
 
   // 4. Token trim
-  const systemPrompt = buildSystemPrompt()
   const allMessages = [...history, { role: 'user', content: message }]
-  const { messages: trimmedMessages, trimmed } = trimMessages(allMessages, systemPrompt, 8000)
+  const { messages: trimmedMessages, trimmed } = trimMessages(allMessages, SYSTEM_PROMPT, 8000)
 
   // 5. Provider
   res.status(200).setHeader('Content-Type', 'text/plain; charset=utf-8')
@@ -81,7 +79,7 @@ export default async function handler(req, res) {
 
   let result
   try {
-    result = await aiProvider.send({ systemPrompt, messages: trimmedMessages })
+    result = await aiProvider.send({ systemPrompt: SYSTEM_PROMPT, messages: trimmedMessages })
     for await (const chunk of result.stream) {
       res.write(chunk)
     }

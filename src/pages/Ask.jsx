@@ -36,6 +36,13 @@ export default function Ask() {
   const initialised = useRef(false)
   const scrollRef = useRef(null)
   const typewriterRef = useRef(null)
+  // Pre-warm a Turnstile token as soon as the page loads so it's ready
+  // by the time the user hits send. Refreshed after each use.
+  const pendingToken = useRef(fetchToken())
+
+  function fetchToken() {
+    return getTurnstileToken().catch(() => null)
+  }
 
   useEffect(() => {
     if (initialised.current) return
@@ -58,14 +65,11 @@ export default function Ask() {
     // Show dots right away — before token fetch or API call
     setStreamDisplay('')
 
-    // Try to get a Turnstile token but never block on it.
-    // The rate limit and spend cap are the real abuse protection.
-    let token = null
-    try {
-      token = await getTurnstileToken()
-    } catch (err) {
-      console.warn('Turnstile token unavailable, continuing without:', err?.message)
-    }
+    // Use the pre-warmed token (resolves instantly if ready, waits briefly if
+    // not). Start fetching the next one immediately so it's ready for the
+    // following message.
+    const token = await pendingToken.current
+    pendingToken.current = fetchToken()
 
     // Shared state between the streamer and the typewriter.
     // The streamer fills `buffer` with whatever Gemini sends. The typewriter
