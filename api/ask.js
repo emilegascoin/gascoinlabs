@@ -2,6 +2,8 @@ import { verifyTurnstile } from './_lib/turnstile.js'
 import { checkRateLimit } from './_lib/rateLimit.js'
 import { checkSpendCap, recordSpend } from './_lib/spendCap.js'
 import { trimMessages } from './_lib/trimMessages.js'
+import { logChat } from './_lib/chatLog.js'
+import { captureError } from './_lib/sentry.js'
 import { aiProvider } from '../src/lib/aiProvider.js'
 import { buildSystemPrompt } from '../src/lib/claudeContext.js'
 
@@ -64,6 +66,9 @@ export default async function handler(req, res) {
     return
   }
 
+  // Log the question — fire and forget, never blocks the response
+  logChat(req, message)
+
   // 4. Token trim
   const systemPrompt = buildSystemPrompt()
   const allMessages = [...history, { role: 'user', content: message }]
@@ -82,6 +87,7 @@ export default async function handler(req, res) {
     }
   } catch (err) {
     console.error('Provider error', err)
+    captureError(err, { context: 'provider', ip })
     res.write(`\n\nSomething went wrong on my end. Email me at emilegascoin@gmail.com.`)
   } finally {
     res.end()
