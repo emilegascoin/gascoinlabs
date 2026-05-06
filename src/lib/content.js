@@ -140,7 +140,7 @@ export const gascoinlabsProject = {
   role: 'Designer and developer',
   dates: 'Early 2026',
   stack: ['React 19', 'Vite', 'Tailwind', 'React Router', 'Node.js', 'Vercel', 'Upstash Redis', 'Cloudflare Turnstile', 'Google Gemini API', 'Vitest'],
-  context: 'My commercial work at Scada Systems was vanilla JavaScript, PHP and MySQL. For this site I wanted a stack that reflects how I would actually build something today if given the choice. React on the frontend, serverless Node functions for the backend, Redis for state, Cloudflare Turnstile for bot protection and Google Gemini powering the chatbot. The whole thing was built using Claude Code as a development partner with a subagent-driven workflow.',
+  context: 'My commercial work for the Scada Systems Website was vanilla JavaScript, PHP and MySQL. For this site I wanted a stack that reflects how I would actually build something today if given the choice. React on the frontend, serverless Node functions for the backend, Redis for state, Cloudflare Turnstile for bot protection and Google Gemini powering the chatbot. The whole thing was built using Claude Code as a development partner with a subagent-driven workflow.',
   process: [
     'Started with a planning session in Claude Code to scope the whole site as a numbered task list. 32 tasks in total.',
     'Wrote tests first for the API and abuse protection logic using Vitest. 32 tests passing across rate limiting, spend cap, message trimming and Turnstile verification.',
