@@ -3,13 +3,16 @@ import { useLocation } from 'react-router-dom'
 import { getTurnstileToken } from '../lib/turnstileClient'
 import { askEmileWidget } from '../lib/content'
 
-// Typing speed — randomised per character for a human feel (ms per char)
-function charDelay() {
-  return Math.floor(Math.random() * 20) + 8 // 8-28ms, avg ~18ms
+// Typing speed that scales with how much buffer is ahead.
+// Slowing down when nearly caught up prevents hard stops between Gemini chunks —
+// the typewriter backs off so the stream can build a small queue again.
+function charDelay(charsBehind) {
+  if (charsBehind < 5) return 55   // nearly caught up — slow right down
+  if (charsBehind < 20) return 30  // low runway — moderate slowdown
+  return Math.floor(Math.random() * 20) + 8 // healthy buffer — normal speed
 }
 
-// Adaptive typewriter step. If the buffer is much bigger than what's been
-// shown, type a few chars per tick so we don't fall behind on a fast stream.
+// Step size when there is a large backlog (e.g. returning to a tab mid-stream)
 function typewriterStep(charsBehind) {
   if (charsBehind > 100) return 3
   if (charsBehind > 40) return 2
@@ -41,7 +44,11 @@ export default function Ask() {
   const pendingToken = useRef(fetchToken())
 
   function fetchToken() {
-    return getTurnstileToken().catch(() => null)
+    // Race against a hard timeout so a stuck script load never blocks send()
+    return Promise.race([
+      getTurnstileToken(),
+      new Promise(resolve => setTimeout(() => resolve(null), 8000)),
+    ]).catch(() => null)
   }
 
   useEffect(() => {
@@ -140,10 +147,10 @@ export default function Ask() {
             typewriterRef.current = null
             resolve()
           } else {
-            typewriterRef.current = setTimeout(tick, charDelay())
+            typewriterRef.current = setTimeout(tick, charDelay(behind))
           }
         }
-        typewriterRef.current = setTimeout(tick, charDelay())
+        typewriterRef.current = setTimeout(tick, charDelay(0))
       })
     }
 
