@@ -135,8 +135,9 @@ export default function Ask() {
     function runTypewriter() {
       return new Promise(resolve => {
         const tick = () => {
-          if (state.displayed < state.buffer.length) {
-            const behind = state.buffer.length - state.displayed
+          // Compute behind first so it's always in scope for charDelay()
+          const behind = state.buffer.length - state.displayed
+          if (behind > 0) {
             const step = typewriterStep(behind)
             state.displayed = Math.min(state.displayed + step, state.buffer.length)
             // trimStart so a leading newline from the model shows as dots
