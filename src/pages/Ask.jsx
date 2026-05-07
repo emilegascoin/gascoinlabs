@@ -3,16 +3,12 @@ import { useLocation } from 'react-router-dom'
 import { getTurnstileToken } from '../lib/turnstileClient'
 import { askEmileWidget } from '../lib/content'
 
-// Typing speed that scales with how much buffer is ahead.
-// Slowing down when nearly caught up prevents hard stops between Gemini chunks —
-// the typewriter backs off so the stream can build a small queue again.
-function charDelay(charsBehind) {
-  if (charsBehind < 5) return 55   // nearly caught up — slow right down
-  if (charsBehind < 20) return 30  // low runway — moderate slowdown
-  return Math.floor(Math.random() * 20) + 8 // healthy buffer — normal speed
+// Fixed typing speed — randomised per character for a human feel
+function charDelay() {
+  return Math.floor(Math.random() * 20) + 8 // 8-28ms, avg ~18ms
 }
 
-// Step size when there is a large backlog (e.g. returning to a tab mid-stream)
+// Step size — type faster when a large backlog builds up (e.g. returning to a tab)
 function typewriterStep(charsBehind) {
   if (charsBehind > 100) return 3
   if (charsBehind > 40) return 2
@@ -131,27 +127,27 @@ export default function Ask() {
     }
 
     // Typewriter: drips characters from buffer to the display.
+    // Waits a short initial delay so Gemini can build up a buffer before we
+    // start typing — this prevents catching up mid-stream and pausing.
     // Resolves only once the stream is done AND we've caught up.
     function runTypewriter() {
       return new Promise(resolve => {
         const tick = () => {
-          // Compute behind first so it's always in scope for charDelay()
           const behind = state.buffer.length - state.displayed
           if (behind > 0) {
             const step = typewriterStep(behind)
             state.displayed = Math.min(state.displayed + step, state.buffer.length)
-            // trimStart so a leading newline from the model shows as dots
-            // rather than a blank line while the real content loads
             setStreamDisplay(state.buffer.slice(0, state.displayed).trimStart())
           }
           if (state.done && state.displayed >= state.buffer.length) {
             typewriterRef.current = null
             resolve()
           } else {
-            typewriterRef.current = setTimeout(tick, charDelay(behind))
+            typewriterRef.current = setTimeout(tick, charDelay())
           }
         }
-        typewriterRef.current = setTimeout(tick, charDelay(0))
+        // Give Gemini ~400ms head start before the typewriter begins
+        typewriterRef.current = setTimeout(tick, 400)
       })
     }
 
