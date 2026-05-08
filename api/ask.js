@@ -65,9 +65,6 @@ export default async function handler(req, res) {
     return
   }
 
-  // Log the question — fire and forget, never blocks the response
-  logChat(req, message)
-
   // 4. Token trim
   const allMessages = [...history, { role: 'user', content: message }]
   const { messages: trimmedMessages, trimmed } = trimMessages(allMessages, SYSTEM_PROMPT, 8000)
@@ -78,12 +75,20 @@ export default async function handler(req, res) {
   if (trimmed) res.write('(earlier messages trimmed)\n\n')
 
   let result
+  const t0 = Date.now()
+  let ttft_ms = null
+  let chars = 0
+  let streamErrored = false
+
   try {
     result = await aiProvider.send({ systemPrompt: SYSTEM_PROMPT, messages: trimmedMessages })
     for await (const chunk of result.stream) {
+      if (ttft_ms === null) ttft_ms = Date.now() - t0
+      chars += chunk.length
       res.write(chunk)
     }
   } catch (err) {
+    streamErrored = true
     console.error('Provider error', err)
     captureError(err, { context: 'provider', ip })
     res.write(`\n\nSomething went wrong on my end. Email me at emilegascoin@gmail.com.`)
@@ -91,7 +96,15 @@ export default async function handler(req, res) {
     res.end()
   }
 
-  // 6. Record spend (after stream complete)
+  // 6. Log the question with timing — after stream so we have the numbers
+  const timing = streamErrored ? {} : {
+    ttft_s: ttft_ms !== null ? +(ttft_ms / 1000).toFixed(2) : null,
+    total_s: +((Date.now() - t0) / 1000).toFixed(2),
+    chars,
+  }
+  logChat(req, message, timing)
+
+  // 7. Record spend (after stream complete)
   if (result?.getUsage) {
     try {
       const usage = result.getUsage()

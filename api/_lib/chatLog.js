@@ -12,23 +12,18 @@ function getLocation(req) {
   return parts.join(', ') || 'unknown'
 }
 
-// Mask the last two octets of the IP for basic privacy
-function maskIp(ip) {
-  if (!ip || ip === 'unknown') return 'unknown'
-  const parts = ip.split('.')
-  if (parts.length === 4) return `${parts[0]}.${parts[1]}.x.x`
-  return ip.slice(0, 8) + '...' // IPv6 fallback
-}
 
-export async function logChat(req, message) {
+// timing: { ttft_ms, total_ms, chars } — all optional, omitted if stream errored
+export async function logChat(req, message, timing = {}) {
   try {
     const redis = getRedis()
+    const now = new Date()
+    const ts = now.toISOString().replace('T', ' ').slice(0, 19) + ' UTC'
     const entry = JSON.stringify({
-      ts: new Date().toISOString(),
-      ip: maskIp(req.headers['x-forwarded-for']?.split(',')[0].trim() || req.headers['x-real-ip'] || 'unknown'),
+      ts,
       location: getLocation(req),
-      referrer: req.headers['referer'] || req.headers['referrer'] || 'direct',
-      message: message.slice(0, 500), // cap at 500 chars in case of anything odd
+      message: message.slice(0, 500),
+      ...timing,
     })
     await redis.lpush(LOG_KEY, entry)
     await redis.ltrim(LOG_KEY, 0, MAX_ENTRIES - 1)
