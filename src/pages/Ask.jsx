@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from 'react'
+import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { getTurnstileToken } from '../lib/turnstileClient'
 import { askEmileWidget } from '../lib/content'
@@ -81,9 +81,16 @@ export default function Ask() {
     if (initial) send(initial)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Auto-scroll only fires when a message is sent or settled (the messages
+  // array changes). Firing it on every streamDisplay tick was scheduling a
+  // fresh smooth-scroll animation 50+ times per second during streaming,
+  // which Safari's compositor couldn't keep up with and showed up as
+  // gradually worsening scroll lag the longer the page stayed open.
+  // Using 'auto' (instant) behaviour also avoids competing with the user's
+  // own scrolling.
   useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages, streamDisplay])
+    scrollRef.current?.scrollIntoView({ behavior: 'auto' })
+  }, [messages.length])
 
   async function send(content) {
     if (!content.trim() || pending) return
@@ -230,10 +237,14 @@ export default function Ask() {
     setPending(false)
   }
 
-  // Merge committed messages with the active streaming bubble
-  const displayMessages = streamDisplay !== null
-    ? [...messages, { role: 'assistant', content: streamDisplay, isActive: true }]
-    : messages
+  // Merge committed messages with the active streaming bubble. Memoised so
+  // the array reference is stable across re-renders that don't actually
+  // change the underlying data (e.g. a keystroke in the input box).
+  const displayMessages = useMemo(() => (
+    streamDisplay !== null
+      ? [...messages, { role: 'assistant', content: streamDisplay, isActive: true }]
+      : messages
+  ), [messages, streamDisplay])
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-12 min-h-[80vh] flex flex-col">
