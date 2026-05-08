@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { getTurnstileToken } from '../lib/turnstileClient'
 import { askEmileWidget } from '../lib/content'
@@ -24,6 +24,33 @@ function TypingDots() {
     </span>
   )
 }
+
+// Memoised message bubble - only re-renders if its own content/role changes.
+// Without this, every keystroke in the input re-renders every bubble in the
+// list, which Safari handles noticeably worse than Chrome (visible input lag
+// once a few messages have accumulated).
+const MessageBubble = memo(function MessageBubble({ role, content, isActive }) {
+  const isDots = isActive && !content
+  const isTyping = isActive && content.length > 0
+  return (
+    <div className={role === 'user' ? 'text-right' : ''}>
+      <div className={`inline-block max-w-prose text-left rounded-2xl px-4 py-3 ${
+        role === 'user' ? 'bg-navy text-cream' : 'bg-white border border-rule'
+      }`}>
+        {isDots ? (
+          <TypingDots />
+        ) : (
+          <p className="text-sm whitespace-pre-wrap">
+            {content}
+            {isTyping && (
+              <span className="inline-block w-0.5 h-3.5 bg-current ml-0.5 align-middle animate-pulse" />
+            )}
+          </p>
+        )}
+      </div>
+    </div>
+  )
+})
 
 export default function Ask() {
   const location = useLocation()
@@ -217,28 +244,14 @@ export default function Ask() {
       </header>
 
       <div className="flex-1 space-y-5 mb-6">
-        {displayMessages.map((m, i) => {
-          const isDots = m.isActive && !m.content
-          const isTyping = m.isActive && m.content.length > 0
-          return (
-            <div key={i} className={m.role === 'user' ? 'text-right' : ''}>
-              <div className={`inline-block max-w-prose text-left rounded-2xl px-4 py-3 ${
-                m.role === 'user' ? 'bg-navy text-cream' : 'bg-white border border-rule'
-              }`}>
-                {isDots ? (
-                  <TypingDots />
-                ) : (
-                  <p className="text-sm whitespace-pre-wrap">
-                    {m.content}
-                    {isTyping && (
-                      <span className="inline-block w-0.5 h-3.5 bg-current ml-0.5 align-middle animate-pulse" />
-                    )}
-                  </p>
-                )}
-              </div>
-            </div>
-          )
-        })}
+        {displayMessages.map((m, i) => (
+          <MessageBubble
+            key={i}
+            role={m.role}
+            content={m.content}
+            isActive={m.isActive}
+          />
+        ))}
         <div ref={scrollRef} />
       </div>
 
