@@ -9,8 +9,8 @@ export const profile = {
 }
 
 export const hero = {
-  headline: 'Software engineer. Experienced with real code, faster with AI.',
-  sub: 'Based in Melbourne. 2.5 years commercial experience across C++ and full-stack web. Looking for a role where AI-assisted development is the standard.',
+  headline: 'Software engineer across C++ systems and full stack web.',
+  sub: 'Two and a half years of commercial experience building production software, debugging real systems and shipping web work end to end. Looking for a team where I can keep growing and contribute useful work.',
   ctas: [
     { label: 'Ask Emile', to: '/ask', primary: true },
     { label: 'View projects', to: '/work', primary: false },
@@ -19,9 +19,9 @@ export const hero = {
 
 export const about = {
   paragraphs: [
-    'I am a software developer with 2.5 years of commercial experience across C++ and full stack web development. I work with AI tools as a genuine part of how I develop, not as a shortcut. My job is to brainstorm, steer the output and make sure what gets built is actually good.',
-    'I am looking for a role in Melbourne where I can keep growing. My background is software engineering but building this site has given me a genuine interest in full stack web development and I have really enjoyed that world. I am open to anything software or tech related as long as I am actually growing doing it. Team and culture matter more to me than the specific stack. I want somewhere with regular communication, a stand-up rhythm and tasks that come from team discussion rather than a pile of tickets assigned in isolation.',
-    'Outside of work I build and fix computers, go to the gym, follow the tech and AI space and listen to music every day. I moved to Melbourne because every suburb has its own character and the tech scene here is somewhere I genuinely want to grow into.',
+    'I am a software engineer with two and a half years of commercial experience across production C++ and web development. At Scada Systems I worked on industrial design software, client-reported issues and a full marketing site redesign across HTML, CSS, JavaScript, PHP and MySQL.',
+    'Across both stacks I worked on real-world client bugs, multithreaded performance problems and full feature builds. Building this portfolio extended that into a modern full stack React app with serverless functions, Redis-backed controls, monitoring and API tests.',
+    'I work best with regular communication, a stand-up rhythm and tasks that come from team discussion. Beyond that I am open to a wide range of software and tech work.',
   ],
 }
 
@@ -30,7 +30,7 @@ export const experience = [
     company: 'Scada Systems Ltd',
     location: 'Auckland',
     title: 'Graduate Software Engineer',
-    dates: 'Nov 2023 — Mar 2026',
+    dates: 'Nov 2023 - Mar 2026',
     summary: 'Two distinct workstreams: independently leading a full redesign of the Elecdes Design Suite marketing website and developing C++ features for the Elecdes Design Suite itself.',
     bullets: [
       'Independently redesigned elecdes.com using HTML, CSS, JavaScript, PHP, SQL, Google Translate API, AJAX form handling, YouTube video embedding.',
@@ -46,7 +46,7 @@ export const education = [
   {
     school: 'University of Auckland',
     qualification: 'Programming with Web Technologies',
-    dates: 'Jul-Nov 2026',
+    dates: 'Jul-Nov 2025',
     detail: 'Svelte, Node.js, SQLite, REST APIs',
   },
   {
@@ -58,13 +58,13 @@ export const education = [
 ]
 
 export const aiWorkflow = {
-  intro: 'I spent two and a half years writing C++ and building a website line by line. That foundation means I actually understand what AI-generated code is doing and whether it belongs. Now I use Claude Code as a development partner and I\'m roughly 5x more productive for it. The skill isn\'t prompting, it\'s brainstorming and working together to get the desired results.',
+  intro: 'I spent two and a half years writing production C++ and building real web features line by line. That foundation is what makes me useful: understanding the code, finding the actual problem and shipping fixes that hold up. I bring that same engineering rhythm to full stack work.',
   steps: [
-    'Brainstorm the problem with Claude Code first. Talk through edge cases, constraints and approach before writing anything.',
-    'Agree on a plan then let Claude Code take a first pass at the implementation.',
-    'Review the output properly. Check structure, naming, edge cases and best practices.',
-    'Fix what needs fixing. Deal with the underlying issue rather than patching over it.',
-    'Retest, then push for review.',
+    'Start with the problem. Understand the constraints, the existing code and what done actually looks like before writing anything.',
+    'Plan the approach. For non-trivial work I sketch it out, pressure-check the tradeoffs and keep the change small enough to review properly.',
+    'Write the change. Small focused commits, readable code and clear ownership of the result.',
+    'Review properly. Read every line, check structure, naming, edge cases and how it sits in the broader codebase.',
+    'Test, debug and ship. Catch issues at the unit level, then verify behaviour end to end before pushing for review.',
   ],
 }
 
@@ -74,7 +74,7 @@ export const skills = {
   Backend: ['Node.js', 'Express', 'PHP'],
   Databases: ['SQL', 'SQLite', 'PostgreSQL', 'MS Access', 'SQL Server'],
   Tools: ['Git', 'Redmine', 'MFC', 'AutoCAD'],
-  AI: ['Claude Code', 'parallel VM workflow', 'Anthropic SDK', 'Google GenAI SDK', 'OpenAI Whisper'],
+  'Modern tooling': ['Git workflows', 'API integrations', 'Anthropic SDK', 'Google GenAI SDK', 'OpenAI Whisper'],
 }
 
 export const reference = {
@@ -83,23 +83,11 @@ export const reference = {
   date: '9 March 2026',
 }
 
-export const personal = {
-  whyMelbourne: 'I fell in love with the culture. Every suburb has its own vibe and atmosphere, like visiting a new town each time. Job wise the tech scene here has been advancing rapidly and I wanted to be part of it and grow as a developer from being immersed in it.',
-  hobbies: 'Gaming, building and fixing computers, going to the gym, running and music. I listen to music every day without fail. I have dabbled in making it with FL Studio but have never actually finished a song. Before moving to Melbourne I played squash a bit too.',
-  whySoftware: 'My passion for computers started from a very young age and always pointed me toward this career. The maintenance technician and barista roles came before my degree. They were not a detour, just where I was before I had the qualifications to pursue what I always wanted to do.',
-  previousRoles: 'At Air Solutions I applied technical thinking to real problems: measuring air outflow and humidity to find the right solutions. It gave me a practical understanding of applying analytical thinking in the field. At Karajoz Coffee Company I was client facing every day which built my communication and people skills. It also taught me to work under pressure. Some shifts were quiet and then 30 people would walk in at once and I had to deliver, fast and without dropping quality.',
-  uniGroupProject: 'In my Programming with Web Technologies paper at the University of Auckland I worked on a group project building a full stack blog platform with authentication, article management and a comments system. I led the backend architecture and took on a senior role within the group given I had more commercial experience than my teammates. I supported others with debugging and integration across the full stack.',
-  boxheadGame: 'In my third year at Victoria University of Wellington I built a Java recreation of the flash game BoxHead for a computer graphics paper. Fully functional with enemy AI, multiple weapon types, loot mechanics and escalating difficulty rounds. I built it because I grew up playing the original and wanted to recreate it. GitHub: github.com/emilegascoin',
-  workingStyle: 'I thrive with regular communication and collaboration on projects rather than working in isolation through an assigned backlog. Stand-up culture and check-ins between team members to get the best result is ideal. I manage my focus by setting daily tasks and ordering them by order of magnitude. I have the ability to hyper focus when I am locked in on a problem which I consider a strength.',
-  careerAmbitions: 'Long term I want to start my own software company and build something widely used. That is a long way off and I want to build up the experience to do it properly first. Right now I am looking for anything software or tech related in Melbourne. My background is software engineering but building this site has genuinely sparked an interest in full stack web development. I am open to either direction as long as I am growing. The team and the culture are what matter most.',
-  personality: 'Direct, genuine and pretty low on corporate fluff. I say what I mean. I care more about the output than the credit and I work best when the people around me do too.',
-}
-
 export const askEmileWidget = {
   greeting: 'Hey, I\'m Emile. Ask me anything about my work or what I\'m looking for.',
   suggestions: [
     'What are you looking for in your next role?',
-    'How do you use AI in your workflow?',
+    'What does your engineering workflow look like?',
     'What did you build at Scada Systems?',
     'Why Melbourne?',
   ],
@@ -136,25 +124,26 @@ export const elecdesCaseStudy = {
 
 export const gascoinlabsProject = {
   title: 'gascoinlabs.com: personal portfolio and chatbot',
-  subtitle: 'This site. A React portfolio with a serverless AI chatbot grounded in my CV. Built end to end using Claude Code as a development partner, the same workflow it describes.',
+  subtitle: 'This site. A full stack React app with a serverless backend, three-layer abuse protection, error monitoring, structured chat logging and a streaming chatbot grounded in my own context.',
   role: 'Designer and developer',
   dates: 'Early 2026',
-  stack: ['React 19', 'Vite', 'Tailwind', 'React Router', 'Node.js', 'Vercel', 'Upstash Redis', 'Cloudflare Turnstile', 'Google Gemini API', 'Vitest'],
-  context: 'My commercial work for the Scada Systems Website was vanilla JavaScript, PHP and MySQL. For this site I wanted a stack that reflects how I would actually build something today if given the choice. React on the frontend, serverless Node functions for the backend, Redis for state, Cloudflare Turnstile for bot protection and Google Gemini powering the chatbot. The whole thing was built using Claude Code as a development partner with a subagent-driven workflow.',
+  stack: ['React 19', 'Vite', 'Tailwind', 'React Router', 'Node.js', 'Vercel', 'Upstash Redis', 'Cloudflare Turnstile', 'Sentry', 'Google Gemini API', 'Vitest'],
+  context: 'My commercial web work was vanilla JavaScript, PHP and MySQL. For this site I picked a stack closer to what I would reach for on a greenfield project today: React on the frontend, serverless Node functions on the backend, Upstash Redis for stateful counters and chat logs, Cloudflare Turnstile for bot protection, Sentry for error monitoring and Google Gemini powering the chatbot. I built it end to end, from architecture and implementation through to tests, deployment and production checks.',
   process: [
-    'Started with a planning session in Claude Code to scope the whole site as a numbered task list. 32 tasks in total.',
+    'Scoped the whole project as a numbered task list. 32 items covering frontend pages, the API, abuse protection, logging and deployment.',
     'Wrote tests first for the API and abuse protection logic using Vitest. 32 tests passing across rate limiting, spend cap, message trimming and Turnstile verification.',
-    'Used subagent-driven development for non-trivial work. Fresh subagent per task with a two-stage review (spec compliance, then code quality).',
+    'Broke work into small focused tasks and reviewed each change for spec compliance, code quality and fit with the rest of the app before merging anything.',
     'One logical change per commit so the history is actually readable. The git log doubles as a timeline of what was built when.',
     'Deployed early to Vercel and iterated on the live site rather than building everything locally first.',
   ],
   features: [
-    { title: 'Ask Emile chatbot', detail: 'Serverless AI chatbot grounded in my CV and personal context. Provider-agnostic adapter so I can swap between Gemini and Claude with an env var. Streams responses back to the client with an animated typewriter effect for a more human feel.' },
-    { title: 'Three-layer abuse protection', detail: 'Cloudflare Turnstile runs invisibly in the background. If a token is returned and verification fails, the request is blocked because that pattern means a bot tried to forge a token. If no token is returned at all, the request still goes through because that just means the user has a privacy extension that blocked the script. Then a per-IP daily request limit (150/day) catches anyone hammering the endpoint, and finally a daily spend cap tracked in Upstash Redis is the cost-control backstop. Once the cap is hit the bot responds with a polite fallback rather than making further API calls.' },
-    { title: 'TDD for the API surface', detail: 'Rate limit, spend cap, Turnstile verifier and message trimmer all have unit tests. Vitest with mocked Redis and fetch. The static React components do not have tests because that is over-engineering for a portfolio site.' },
+    { title: 'Ask Emile chatbot', detail: 'Serverless AI chatbot grounded in my CV and personal context. Provider-agnostic adapter so the model can be changed through configuration. Streams responses back to the client with an animated typewriter effect for a more human feel.' },
+    { title: 'Three-layer abuse protection', detail: 'Cloudflare Turnstile runs invisibly in the background. If a token is returned and verification fails, the request is blocked because that pattern means a bot tried to forge a token. If no token is returned at all, the request still goes through because that just means the user has a privacy extension that blocked the script. Then a per-IP daily request limit (150/day) catches anyone hammering the endpoint. Finally a daily spend cap tracked in Upstash Redis is the cost-control backstop. Once the cap is hit the bot responds with a polite fallback rather than making further API calls.' },
+    { title: 'TDD for the API surface', detail: 'Rate limit, spend cap, Turnstile verifier and message trimmer all have unit tests. Vitest with mocked Redis and fetch. I focused test coverage on the backend behaviour where regressions would matter most.' },
     { title: 'Streaming responses', detail: 'API uses ReadableStream to stream Gemini output back to the browser. The frontend reads chunks via a ReadableStreamDefaultReader and feeds them through a typewriter that drips characters out at randomised intervals so it reads like a person typing.' },
     { title: 'Single source of truth for content', detail: 'All site copy lives in a single content file. The chatbot system prompt is generated from the same data so the bot can never claim something the site does not say. Adding a new project is one entry in an array.' },
-    { title: 'AI-assisted end to end', detail: 'Built using Claude Code with parallel agents tackling independent tasks while I act as quality gate. The site is a live example of the workflow it describes elsewhere on the page.' },
+    { title: 'Error monitoring and observability', detail: 'Sentry wired into the API for full stack traces on provider errors and unexpected failures. Structured chat logs in Redis capture timing data (time to first token, total response time) so I can see how the system actually performs in production.' },
+    { title: 'Modern tooling in the loop', detail: 'Used current AI and API tooling where it made the work faster, while keeping architecture, review, testing and shipping decisions under my own control.' },
   ],
   newToMe: {
     intro: 'Things I picked up specifically for this project that were not part of my Scada Systems stack:',
@@ -165,19 +154,19 @@ export const gascoinlabsProject = {
       { name: 'Serverless functions on Vercel', detail: 'Replacing PHP and a traditional server with stateless Node functions that spin up on demand. Different mental model.' },
       { name: 'Upstash Redis', detail: 'Cloud key-value store for rate limiting and spend tracking. Way more appropriate than spinning up a database for what amounts to a few counters.' },
       { name: 'Cloudflare Turnstile', detail: 'Invisible bot challenge. Real users never see it, automated abuse gets blocked.' },
-      { name: 'Google Gemini API', detail: 'Used the @google/genai SDK with streaming. Cheaper than Claude for this use case and the responses are good enough.' },
+      { name: 'Google Gemini API', detail: 'Used the @google/genai SDK with streaming responses, cost controls and production fallbacks.' },
       { name: 'Vitest with Testing Library', detail: 'TDD workflow for the abuse protection logic. First time properly running TDD on a personal project.' },
-      { name: 'Claude Code subagent workflow', detail: 'Fresh subagent per task with two-stage review. The biggest unlock has been treating subagents like junior developers I am quality gating.' },
+      { name: 'AI-assisted development workflow', detail: 'Used task-scoped assistance for drafting and review support while keeping final code ownership, testing and integration decisions with me.' },
     ],
   },
-  outcome: 'Live at gascoinlabs.com. The chatbot works, the abuse protection holds, and at this traffic level the whole stack costs essentially nothing to run. More importantly the site is a working example of the AI-assisted workflow I describe rather than just a description of it.',
+  outcome: 'Live at gascoinlabs.com. The chatbot works, the abuse protection holds and at this traffic level the whole stack costs essentially nothing to run. The site is a working example of how I build full stack web today: clear architecture, focused tests, real production tooling and modern AI APIs used as part of a broader engineering workflow.',
   links: [
     { label: 'View site', href: 'https://gascoinlabs.com' },
     { label: 'GitHub', href: 'https://github.com/emilegascoin/gascoinlabs' },
   ],
 }
 
-// Add new projects here — they will appear on the /work index page automatically
+// Add new projects here. They will appear on the /work index page automatically.
 export const projects = [
   {
     href: '/work/elecdes',
@@ -199,5 +188,5 @@ export const projects = [
 
 export const all = {
   profile, hero, about, experience, education,
-  aiWorkflow, skills, reference, personal, askEmileWidget, elecdesCaseStudy, projects,
+  aiWorkflow, skills, reference, askEmileWidget, elecdesCaseStudy, projects,
 }

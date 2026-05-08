@@ -1,6 +1,6 @@
 import { GoogleGenAI } from '@google/genai'
 
-// Pricing as of 2026 — update if Google changes it.
+// Pricing as of 2026 - update if Google changes it.
 // Source: https://ai.google.dev/gemini-api/docs/pricing
 // gemini-2.5-flash: $0.15/M input, $0.60/M output (<=200k ctx)
 const PRICING = {

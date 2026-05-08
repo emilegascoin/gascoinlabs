@@ -8,7 +8,7 @@ export default function Reference() {
           "{reference.quote}"
         </blockquote>
         <figcaption className="mt-6 text-sm text-muted">
-          — {reference.attribution}
+          - {reference.attribution}
           <span className="block font-mono text-xs mt-1">{reference.date}</span>
         </figcaption>
       </figure>

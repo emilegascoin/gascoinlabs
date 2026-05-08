@@ -4,7 +4,7 @@ import SectionHeading from '../ui/SectionHeading'
 export default function Education() {
   return (
     <section className="mx-auto max-w-5xl px-6 py-20 border-t border-rule">
-      <SectionHeading id="education" label="03 — education" title="Where I studied" />
+      <SectionHeading id="education" label="03 - education" title="Where I studied" />
       <div className="space-y-8">
         {education.map((e) => (
           <article key={e.school} className="grid sm:grid-cols-[180px_1fr] gap-6">

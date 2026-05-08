@@ -5,7 +5,7 @@ import SectionHeading from '../ui/SectionHeading'
 export default function Experience() {
   return (
     <section className="mx-auto max-w-5xl px-6 py-20 border-t border-rule">
-      <SectionHeading id="experience" label="02 — experience" title="Where I've worked" />
+      <SectionHeading id="experience" label="02 - experience" title="Where I've worked" />
       <div className="space-y-12">
         {experience.map((job) => (
           <article key={job.company} className="grid sm:grid-cols-[180px_1fr] gap-6">

@@ -3,11 +3,11 @@ import { buildSystemPrompt } from './claudeContext.js'
 
 describe('buildSystemPrompt', () => {
   it('includes Emile identity statement', () => {
-    expect(buildSystemPrompt()).toMatch(/Ask Emile/)
+    expect(buildSystemPrompt()).toMatch(/You are Emile Gascoin/)
   })
 
   it('includes the no-fabrication rule', () => {
-    expect(buildSystemPrompt()).toMatch(/Never invent details/i)
+    expect(buildSystemPrompt()).toMatch(/Don't invent/i)
   })
 
   it('includes the email fallback line', () => {

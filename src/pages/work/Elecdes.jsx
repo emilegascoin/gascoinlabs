@@ -5,7 +5,7 @@ export default function Elecdes() {
   const c = elecdesCaseStudy
   return (
     <article className="mx-auto max-w-5xl px-6 py-16">
-      <Link to="/work" className="text-sm text-muted hover:text-navy">← All projects</Link>
+      <Link to="/work" className="text-sm text-muted hover:text-navy">&lt;- All projects</Link>
 
       <header className="mt-8 pb-10 border-b border-rule">
         <p className="font-mono text-xs uppercase tracking-widest text-muted mb-3">Project</p>
@@ -48,7 +48,7 @@ export default function Elecdes() {
           {c.links.map((l) => (
             <li key={l.label}>
               <a href={l.href} target="_blank" rel="noreferrer" className="text-navy underline underline-offset-4">
-                {l.label} ↗
+                {l.label} -&gt;
               </a>
             </li>
           ))}

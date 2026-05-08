@@ -5,7 +5,7 @@ export default function Skills() {
   const groups = Object.entries(skills)
   return (
     <section className="mx-auto max-w-5xl px-6 py-20 border-t border-rule">
-      <SectionHeading id="skills" label="05 — stack" title="What I work with" />
+      <SectionHeading id="skills" label="05 - stack" title="What I work with" />
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {groups.map(([group, items]) => (
           <div key={group}>

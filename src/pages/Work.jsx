@@ -44,7 +44,7 @@ export default function Work() {
                 </div>
               </div>
 
-              <span className="text-muted group-hover:text-navy transition-colors text-xl mt-1">→</span>
+              <span className="text-muted group-hover:text-navy transition-colors text-xl mt-1">-&gt;</span>
             </div>
           </Link>
         ))}

@@ -3,12 +3,12 @@ import { useLocation } from 'react-router-dom'
 import { getTurnstileToken } from '../lib/turnstileClient'
 import { askEmileWidget } from '../lib/content'
 
-// Fixed typing speed — randomised per character for a human feel
+// Fixed typing speed - randomised per character for a human feel
 function charDelay() {
   return Math.floor(Math.random() * 20) + 8 // 8-28ms, avg ~18ms
 }
 
-// Step size — type faster when a large backlog builds up (e.g. returning to a tab)
+// Step size - type faster when a large backlog builds up (e.g. returning to a tab)
 function typewriterStep(charsBehind) {
   if (charsBehind > 100) return 3
   if (charsBehind > 40) return 2
@@ -65,7 +65,7 @@ export default function Ask() {
     const next = [...messages, { role: 'user', content }]
     setMessages(next)
 
-    // Show dots right away — before token fetch or API call
+    // Show dots right away - before token fetch or API call
     setStreamDisplay('')
 
     // Use the pre-warmed token (resolves instantly if ready, waits briefly if
@@ -104,7 +104,7 @@ export default function Ask() {
         }
 
         // Some in-app browsers (Messenger, LinkedIn) don't support
-        // ReadableStream. Fall back to reading the full response at once —
+        // ReadableStream. Fall back to reading the full response at once -
         // the typewriter still runs, it just won't start until the full
         // response arrives.
         if (!res.body || typeof res.body.getReader !== 'function') {
@@ -128,7 +128,7 @@ export default function Ask() {
 
     // Typewriter: drips characters from buffer to the display.
     // Waits a short initial delay so Gemini can build up a buffer before we
-    // start typing — this prevents catching up mid-stream and pausing.
+    // start typing - this prevents catching up mid-stream and pausing.
     // Resolves only once the stream is done AND we've caught up.
     function runTypewriter() {
       return new Promise(resolve => {
@@ -160,7 +160,7 @@ export default function Ask() {
       // If we got partial content before the error, show it with a short note
       // rather than replacing everything with a generic error message.
       const content = partial
-        ? `${partial}\n\n(Something cut out there — email me at emilegascoin@gmail.com if it keeps happening.)`
+        ? `${partial}\n\n(Something cut out there - email me at emilegascoin@gmail.com if it keeps happening.)`
         : (state.error.message || 'Something went wrong on my end. Email me at emilegascoin@gmail.com.')
       setMessages([...next, { role: 'assistant', content: content.trim() }])
     } else {
