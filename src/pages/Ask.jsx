@@ -83,6 +83,22 @@ export default function Ask() {
       displayed: 0,
       done: false,
       error: null,
+      // The API sends ~2KB of leading whitespace as padding to force Safari
+      // past its stream-rendering buffer threshold. We strip leading
+      // whitespace from incoming chunks until real content arrives so the
+      // typewriter never has to "type past" the invisible padding.
+      contentStarted: false,
+    }
+
+    function appendChunk(chunk) {
+      if (!state.contentStarted) {
+        const stripped = chunk.replace(/^\s+/, '')
+        if (stripped.length === 0) return
+        state.contentStarted = true
+        state.buffer += stripped
+      } else {
+        state.buffer += chunk
+      }
     }
 
     // Streamer: receives chunks from the API into the shared buffer
@@ -108,7 +124,7 @@ export default function Ask() {
         // the typewriter still runs, it just won't start until the full
         // response arrives.
         if (!res.body || typeof res.body.getReader !== 'function') {
-          state.buffer = await res.text()
+          appendChunk(await res.text())
           return
         }
 
@@ -117,7 +133,7 @@ export default function Ask() {
         while (true) {
           const { done, value } = await reader.read()
           if (done) break
-          state.buffer += decoder.decode(value, { stream: true })
+          appendChunk(decoder.decode(value, { stream: true }))
         }
       } catch (err) {
         state.error = err
@@ -182,20 +198,6 @@ export default function Ask() {
         <p className="text-sm text-muted mt-2">The next best thing to actually talking to me.</p>
       </header>
 
-      {messages.length === 0 && streamDisplay === null && (
-        <div className="flex flex-col gap-2 mb-6">
-          {askEmileWidget.suggestions.map((s) => (
-            <button
-              key={s}
-              onClick={() => send(s)}
-              className="text-left text-sm px-4 py-3 border border-rule rounded-lg hover:bg-navy hover:text-cream hover:border-navy transition-colors"
-            >
-              {s}
-            </button>
-          ))}
-        </div>
-      )}
-
       <div className="flex-1 space-y-5 mb-6">
         {displayMessages.map((m, i) => {
           const isDots = m.isActive && !m.content
@@ -222,22 +224,36 @@ export default function Ask() {
         <div ref={scrollRef} />
       </div>
 
-      <form onSubmit={(e) => { e.preventDefault(); send(input) }} className="flex gap-2 sticky bottom-4">
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          disabled={pending}
-          placeholder="Ask anything..."
-          className="flex-1 border border-rule bg-white rounded-full px-5 py-3 text-sm focus:outline-none focus:border-navy"
-        />
-        <button
-          type="submit"
-          disabled={pending || !input.trim()}
-          className="bg-navy text-cream rounded-full px-5 py-3 text-sm hover:bg-navy-dark disabled:opacity-50"
-        >
-          Send
-        </button>
-      </form>
+      <div className="sticky bottom-4 flex flex-col gap-2">
+        <div className="flex flex-wrap gap-2">
+          {askEmileWidget.suggestions.map((s) => (
+            <button
+              key={s}
+              onClick={() => send(s)}
+              disabled={pending}
+              className="text-left text-xs px-3 py-2 border border-rule rounded-full bg-cream hover:bg-navy hover:text-cream hover:border-navy transition-colors disabled:opacity-50"
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+        <form onSubmit={(e) => { e.preventDefault(); send(input) }} className="flex gap-2">
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            disabled={pending}
+            placeholder="Ask anything..."
+            className="flex-1 border border-rule bg-white rounded-full px-5 py-3 text-sm focus:outline-none focus:border-navy"
+          />
+          <button
+            type="submit"
+            disabled={pending || !input.trim()}
+            className="bg-navy text-cream rounded-full px-5 py-3 text-sm hover:bg-navy-dark disabled:opacity-50"
+          >
+            Send
+          </button>
+        </form>
+      </div>
     </div>
   )
 }

@@ -70,8 +70,18 @@ export default async function handler(req, res) {
   const { messages: trimmedMessages, trimmed } = trimMessages(allMessages, SYSTEM_PROMPT, 8000)
 
   // 5. Provider
+  // Safari/WebKit buffers text/plain streams until ~1KB has arrived before
+  // showing anything to the user, so the chat appears frozen for the first
+  // few seconds. We send 2KB of leading whitespace to force Safari past that
+  // threshold immediately. The frontend trims leading whitespace before
+  // display, so it's invisible. Other browsers stream fine either way.
+  // X-Accel-Buffering: no tells reverse proxies (and Vercel) not to buffer.
+  // no-transform stops intermediaries from gzipping which would re-buffer.
   res.status(200).setHeader('Content-Type', 'text/plain; charset=utf-8')
-  res.setHeader('Cache-Control', 'no-cache')
+  res.setHeader('Cache-Control', 'no-cache, no-transform')
+  res.setHeader('X-Accel-Buffering', 'no')
+  res.setHeader('X-Content-Type-Options', 'nosniff')
+  res.write(' '.repeat(2048) + '\n')
   if (trimmed) res.write('(earlier messages trimmed)\n\n')
 
   let result
