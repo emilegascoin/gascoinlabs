@@ -14,7 +14,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.91.1",
     "@google/genai": "^1.50.1",
-    "@sentry/node": "^10.51.0",
+    "@sentry/node": "^10.52.0",
     "@upstash/redis": "^1.37.0",
     "@vercel/analytics": "^2.0.1",
     "react": "^19.2.5",
