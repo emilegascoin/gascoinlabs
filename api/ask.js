@@ -70,19 +70,30 @@ export default async function handler(req, res) {
   const { messages: trimmedMessages, trimmed } = trimMessages(allMessages, SYSTEM_PROMPT, 8000)
 
   // 5. Provider
-  // Safari/WebKit buffers text/plain streams until ~1KB has arrived before
-  // showing anything to the user, so the chat appears frozen for the first
-  // few seconds. We send 2KB of leading whitespace to force Safari past that
-  // threshold immediately. The frontend trims leading whitespace before
-  // display, so it's invisible. Other browsers stream fine either way.
-  // X-Accel-Buffering: no tells reverse proxies (and Vercel) not to buffer.
-  // no-transform stops intermediaries from gzipping which would re-buffer.
-  res.status(200).setHeader('Content-Type', 'text/plain; charset=utf-8')
+  // Stream as Server-Sent Events. Safari aggressively buffers text/plain
+  // streams (the previous 2KB whitespace pad wasn't enough to trip its
+  // threshold reliably), but treats text/event-stream as a real-time feed
+  // and renders chunks as they arrive. Chrome/Firefox handle either fine.
+  //
+  // Format per event: `data: ${JSON-encoded chunk}\n\n`. We JSON-encode so
+  // chunks containing newlines don't break the SSE framing. The frontend
+  // parses these on the way in.
+  //
+  // X-Accel-Buffering / no-transform stop reverse proxies and Vercel's edge
+  // from buffering or gzipping the stream.
+  res.status(200).setHeader('Content-Type', 'text/event-stream; charset=utf-8')
   res.setHeader('Cache-Control', 'no-cache, no-transform')
   res.setHeader('X-Accel-Buffering', 'no')
-  res.setHeader('X-Content-Type-Options', 'nosniff')
-  res.write(' '.repeat(2048) + '\n')
-  if (trimmed) res.write('(earlier messages trimmed)\n\n')
+  res.setHeader('Connection', 'keep-alive')
+  if (typeof res.flushHeaders === 'function') res.flushHeaders()
+  // Initial comment line primes Safari to start streaming immediately.
+  res.write(': stream open\n\n')
+
+  function sendEvent(text) {
+    res.write(`data: ${JSON.stringify(text)}\n\n`)
+  }
+
+  if (trimmed) sendEvent('(earlier messages trimmed)\n\n')
 
   let result
   const t0 = Date.now()
@@ -95,13 +106,13 @@ export default async function handler(req, res) {
     for await (const chunk of result.stream) {
       if (ttft_ms === null) ttft_ms = Date.now() - t0
       chars += chunk.length
-      res.write(chunk)
+      sendEvent(chunk)
     }
   } catch (err) {
     streamErrored = true
     console.error('Provider error', err)
     captureError(err, { context: 'provider', ip })
-    res.write(`\n\nSomething went wrong on my end. Email me at emilegascoin@gmail.com.`)
+    sendEvent('\n\nSomething went wrong on my end. Email me at emilegascoin@gmail.com.')
   } finally {
     res.end()
   }

@@ -77,7 +77,10 @@ describe('/api/ask', () => {
     })
     const res = mockRes()
     await handler(mockReq({ message: 'hi', turnstileToken: 't', history: [] }), res)
-    expect(res.body).toMatch(/Hello there\./)
+    // Response is SSE — chunks are wrapped as `data: <json>\n\n` events.
+    expect(res.headers['Content-Type']).toMatch(/text\/event-stream/)
+    expect(res.body).toMatch(/data: "Hello"/)
+    expect(res.body).toMatch(/data: " there\."/)
     expect(recordSpend).toHaveBeenCalledWith(0.001)
   })
 })

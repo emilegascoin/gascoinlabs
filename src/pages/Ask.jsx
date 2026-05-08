@@ -83,30 +83,39 @@ export default function Ask() {
       displayed: 0,
       done: false,
       error: null,
-      // The API sends ~2KB of leading whitespace as padding to force Safari
-      // past its stream-rendering buffer threshold. We strip leading
-      // whitespace from incoming chunks until real content arrives so the
-      // typewriter never has to "type past" the invisible padding.
-      contentStarted: false,
     }
 
-    function appendChunk(chunk) {
-      if (!state.contentStarted) {
-        const stripped = chunk.replace(/^\s+/, '')
-        if (stripped.length === 0) return
-        state.contentStarted = true
-        state.buffer += stripped
-      } else {
-        state.buffer += chunk
+    // The API streams Server-Sent Events (text/event-stream). Each event is
+    // a `data: <json>\n\n` block where the JSON is one chunk of text from
+    // the AI. SSE was chosen because Safari refuses to render text/plain
+    // streams in real time but treats SSE as a streaming format and renders
+    // chunks immediately. Comment lines (starting with `:`) are ignored.
+    let sseLeftover = ''
+    function ingestSse(raw) {
+      sseLeftover += raw
+      const events = sseLeftover.split('\n\n')
+      sseLeftover = events.pop() || ''
+      for (const event of events) {
+        if (!event.trim() || event.startsWith(':')) continue
+        for (const line of event.split('\n')) {
+          if (!line.startsWith('data:')) continue
+          const payload = line.slice(5).trimStart()
+          try {
+            state.buffer += JSON.parse(payload)
+          } catch {
+            // Malformed event - skip silently rather than break the stream.
+          }
+        }
       }
     }
 
-    // Streamer: receives chunks from the API into the shared buffer
+    // Streamer: reads SSE chunks from the API and feeds them into ingestSse,
+    // which parses out the text and appends to the shared buffer.
     async function runStreamer() {
       try {
         const res = await fetch('/api/ask', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'Accept': 'text/event-stream' },
           body: JSON.stringify({
             message: content,
             history: messages,
@@ -124,7 +133,7 @@ export default function Ask() {
         // the typewriter still runs, it just won't start until the full
         // response arrives.
         if (!res.body || typeof res.body.getReader !== 'function') {
-          appendChunk(await res.text())
+          ingestSse(await res.text())
           return
         }
 
@@ -133,7 +142,7 @@ export default function Ask() {
         while (true) {
           const { done, value } = await reader.read()
           if (done) break
-          appendChunk(decoder.decode(value, { stream: true }))
+          ingestSse(decoder.decode(value, { stream: true }))
         }
       } catch (err) {
         state.error = err
