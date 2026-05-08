@@ -91,21 +91,28 @@ export default function Ask() {
     // streams in real time but treats SSE as a streaming format and renders
     // chunks immediately. Comment lines (starting with `:`) are ignored.
     let sseLeftover = ''
+    function processEvent(event) {
+      if (!event.trim() || event.startsWith(':')) return
+      for (const line of event.split('\n')) {
+        if (!line.startsWith('data:')) continue
+        const payload = line.slice(5).trimStart()
+        try {
+          state.buffer += JSON.parse(payload)
+        } catch {
+          // Malformed event - skip silently rather than break the stream.
+        }
+      }
+    }
     function ingestSse(raw) {
       sseLeftover += raw
       const events = sseLeftover.split('\n\n')
       sseLeftover = events.pop() || ''
-      for (const event of events) {
-        if (!event.trim() || event.startsWith(':')) continue
-        for (const line of event.split('\n')) {
-          if (!line.startsWith('data:')) continue
-          const payload = line.slice(5).trimStart()
-          try {
-            state.buffer += JSON.parse(payload)
-          } catch {
-            // Malformed event - skip silently rather than break the stream.
-          }
-        }
+      for (const event of events) processEvent(event)
+    }
+    function flushSse() {
+      if (sseLeftover) {
+        processEvent(sseLeftover)
+        sseLeftover = ''
       }
     }
 
@@ -134,6 +141,7 @@ export default function Ask() {
         // response arrives.
         if (!res.body || typeof res.body.getReader !== 'function') {
           ingestSse(await res.text())
+          flushSse()
           return
         }
 
@@ -144,6 +152,7 @@ export default function Ask() {
           if (done) break
           ingestSse(decoder.decode(value, { stream: true }))
         }
+        flushSse()
       } catch (err) {
         state.error = err
       } finally {
