@@ -18,4 +18,11 @@ export default defineConfig([
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
   },
+  {
+    // Node-side code (serverless API + provider libs + a few server-side imports)
+    files: ['api/**/*.js', 'src/lib/aiProvider.js', 'src/lib/aiProvider.test.js', 'src/lib/claudeContext.js', 'src/lib/providers/**/*.js'],
+    languageOptions: {
+      globals: { ...globals.node, ...globals.browser },
+    },
+  },
 ])

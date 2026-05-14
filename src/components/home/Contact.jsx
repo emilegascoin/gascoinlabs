@@ -4,7 +4,7 @@ import SectionHeading from '../ui/SectionHeading'
 export default function Contact() {
   return (
     <section className="mx-auto max-w-5xl px-6 py-20 border-t border-rule">
-      <SectionHeading id="contact" label="06 - contact" title="Get in touch" />
+      <SectionHeading id="contact" label="07 - contact" title="Get in touch" />
       <dl className="grid sm:grid-cols-2 gap-y-4 gap-x-8 max-w-prose text-sm">
         <dt className="font-mono text-xs uppercase tracking-widest text-muted">Email</dt>
         <dd><a href={`mailto:${profile.email}`} className="text-navy underline underline-offset-4">{profile.email}</a></dd>

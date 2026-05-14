@@ -1,7 +1,16 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { getTurnstileToken } from '../lib/turnstileClient'
 import { askEmileWidget } from '../lib/content'
+
+const CONSULTING_START = '[[CONSULTING_INTENT]]'
+const CONSULTING_PATTERN = /\[\[CONSULTING_INTENT\]\]([\s\S]*?)\[\[\/CONSULTING_INTENT\]\]/
+const PREFILL_LIMITS = {
+  name: 100,
+  email: 254,
+  company: 150,
+  scope: 4000,
+}
 
 // Fixed typing speed - randomised per character for a human feel
 function charDelay() {
@@ -13,6 +22,36 @@ function typewriterStep(charsBehind) {
   if (charsBehind > 100) return 3
   if (charsBehind > 40) return 2
   return 1
+}
+
+function visibleBuffer(text) {
+  const markerIndex = text.indexOf(CONSULTING_START)
+  if (markerIndex !== -1) return text.slice(0, markerIndex)
+
+  for (let i = Math.min(text.length, CONSULTING_START.length - 1); i > 0; i -= 1) {
+    if (CONSULTING_START.startsWith(text.slice(-i))) {
+      return text.slice(0, -i)
+    }
+  }
+
+  return text
+}
+
+function parseConsultingPrefill(text) {
+  const match = text.match(CONSULTING_PATTERN)
+  if (!match) return null
+
+  try {
+    const parsed = JSON.parse(match[1])
+    return Object.fromEntries(
+      Object.entries(PREFILL_LIMITS).map(([key, limit]) => [
+        key,
+        String(parsed?.[key] ?? '').slice(0, limit),
+      ])
+    )
+  } catch {
+    return null
+  }
 }
 
 function TypingDots() {
@@ -29,7 +68,7 @@ function TypingDots() {
 // Without this, every keystroke in the input re-renders every bubble in the
 // list, which Safari handles noticeably worse than Chrome (visible input lag
 // once a few messages have accumulated).
-const MessageBubble = memo(function MessageBubble({ role, content, isActive }) {
+const MessageBubble = memo(function MessageBubble({ role, content, isActive, showConsultingCta, onConsultingClick }) {
   const isDots = isActive && !content
   const isTyping = isActive && content.length > 0
   return (
@@ -48,15 +87,28 @@ const MessageBubble = memo(function MessageBubble({ role, content, isActive }) {
           </p>
         )}
       </div>
+      {showConsultingCta && (
+        <div className="mt-2">
+          <button
+            type="button"
+            onClick={onConsultingClick}
+            className="bg-navy text-cream rounded-full px-5 py-3 text-sm hover:bg-navy-dark disabled:opacity-50"
+          >
+            Get in touch with Emile
+          </button>
+        </div>
+      )}
     </div>
   )
 })
 
 export default function Ask() {
   const location = useLocation()
+  const navigate = useNavigate()
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [pending, setPending] = useState(false)
+  const [consultingPrefill, setConsultingPrefill] = useState(null)
   // null = idle  |  '' = dots showing  |  'text…' = typing out
   const [streamDisplay, setStreamDisplay] = useState(null)
   const initialised = useRef(false)
@@ -205,7 +257,7 @@ export default function Ask() {
           if (behind > 0) {
             const step = typewriterStep(behind)
             state.displayed = Math.min(state.displayed + step, state.buffer.length)
-            setStreamDisplay(state.buffer.slice(0, state.displayed).trimStart())
+            setStreamDisplay(visibleBuffer(state.buffer.slice(0, state.displayed)).trimStart())
           }
           if (state.done && state.displayed >= state.buffer.length) {
             typewriterRef.current = null
@@ -223,8 +275,11 @@ export default function Ask() {
     await Promise.all([runStreamer(), runTypewriter()])
 
     setStreamDisplay(null)
+    const visibleContent = visibleBuffer(state.buffer).trim()
+    const parsedPrefill = consultingPrefill ? null : parseConsultingPrefill(state.buffer)
+    const shouldShowConsultingCta = Boolean(parsedPrefill)
     if (state.error) {
-      const partial = state.buffer.trim()
+      const partial = visibleContent
       // If we got partial content before the error, show it with a short note
       // rather than replacing everything with a generic error message.
       const content = partial
@@ -232,7 +287,12 @@ export default function Ask() {
         : (state.error.message || 'Something went wrong on my end. Email me at emilegascoin@gmail.com.')
       setMessages([...next, { role: 'assistant', content: content.trim() }])
     } else {
-      setMessages([...next, { role: 'assistant', content: state.buffer.trim() }])
+      setMessages([...next, {
+        role: 'assistant',
+        content: visibleContent,
+        showConsultingCta: shouldShowConsultingCta,
+      }])
+      if (parsedPrefill) setConsultingPrefill(parsedPrefill)
     }
     setPending(false)
   }
@@ -261,6 +321,10 @@ export default function Ask() {
             role={m.role}
             content={m.content}
             isActive={m.isActive}
+            showConsultingCta={m.showConsultingCta && consultingPrefill}
+            onConsultingClick={() => navigate('/', {
+              state: { prefill: consultingPrefill, scrollTo: 'consulting' },
+            })}
           />
         ))}
         <div ref={scrollRef} />
