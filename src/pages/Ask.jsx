@@ -12,15 +12,13 @@ const PREFILL_LIMITS = {
   scope: 4000,
 }
 
-// Fixed typing speed - randomised per character for a human feel
-function charDelay() {
-  return Math.floor(Math.random() * 20) + 8 // 8-28ms, avg ~18ms
-}
-
-// Step size - type faster when a large backlog builds up (e.g. returning to a tab)
+// Catch-up step size — how many chars to advance when the buffer is ahead.
+// Larger thresholds than before because RAF ticks at 60fps and each tick
+// can naturally handle more chars than a per-character setTimeout could.
 function typewriterStep(charsBehind) {
-  if (charsBehind > 100) return 3
-  if (charsBehind > 40) return 2
+  if (charsBehind > 160) return 8
+  if (charsBehind > 80) return 5
+  if (charsBehind > 40) return 3
   return 1
 }
 
@@ -246,28 +244,71 @@ export default function Ask() {
       }
     }
 
-    // Typewriter: drips characters from buffer to the display.
-    // Waits a short initial delay so Gemini can build up a buffer before we
-    // start typing - this prevents catching up mid-stream and pausing.
-    // Resolves only once the stream is done AND we've caught up.
+    // Typewriter: drips characters from buffer to the display using RAF.
+    //
+    // Why RAF instead of setTimeout:
+    //   - RAF fires in sync with the display refresh so there is no timer
+    //     jitter. On Safari and slow connections setTimeout fires irregularly,
+    //     making the old random-delay approach look patchy and stuttery.
+    //   - A time-based character budget (elapsed ms / ms-per-char) keeps the
+    //     perceived typing speed steady even when frames are dropped. If Safari
+    //     misses a frame the next frame advances enough chars to compensate.
+    //
+    // Random per-character delay was removed intentionally. The natural
+    // variation in SSE chunk arrival gives the stream enough organic feel
+    // without adding extra jitter on top.
     function runTypewriter() {
       return new Promise(resolve => {
-        const tick = () => {
-          const behind = state.buffer.length - state.displayed
-          if (behind > 0) {
-            const step = typewriterStep(behind)
-            state.displayed = Math.min(state.displayed + step, state.buffer.length)
-            setStreamDisplay(visibleBuffer(state.buffer.slice(0, state.displayed)).trimStart())
+        const CHARS_PER_SEC = 60
+        const MS_PER_CHAR = 1000 / CHARS_PER_SEC
+        let lastTime = 0
+        let charBudget = 0
+        let started = false
+
+        const tick = (now) => {
+          if (!started) {
+            // First RAF tick — initialise the clock without advancing anything
+            started = true
+            lastTime = now
+            typewriterRef.current = requestAnimationFrame(tick)
+            return
           }
+
+          // Cap elapsed to 100ms so switching back to a background tab doesn't
+          // cause the text to jump forward by several seconds worth of chars.
+          const elapsed = Math.min(now - lastTime, 100)
+          lastTime = now
+
+          const behind = state.buffer.length - state.displayed
+
+          if (behind > 0) {
+            charBudget += elapsed / MS_PER_CHAR
+            const budgetStep = Math.floor(charBudget)
+            if (budgetStep > 0) {
+              const step = Math.min(budgetStep, typewriterStep(behind))
+              state.displayed = Math.min(state.displayed + step, state.buffer.length)
+              charBudget -= step
+              setStreamDisplay(visibleBuffer(state.buffer.slice(0, state.displayed)).trimStart())
+            }
+          } else {
+            // Buffer empty — reset budget so we don't stockpile time while
+            // waiting for the next SSE chunk to arrive.
+            charBudget = 0
+          }
+
           if (state.done && state.displayed >= state.buffer.length) {
             typewriterRef.current = null
             resolve()
           } else {
-            typewriterRef.current = setTimeout(tick, charDelay())
+            typewriterRef.current = requestAnimationFrame(tick)
           }
         }
-        // Give Gemini ~400ms head start before the typewriter begins
-        typewriterRef.current = setTimeout(tick, 400)
+
+        // Give the stream a 400ms head start before the typewriter begins,
+        // same as before, so there is always something to display immediately.
+        typewriterRef.current = setTimeout(() => {
+          typewriterRef.current = requestAnimationFrame(tick)
+        }, 400)
       })
     }
 
