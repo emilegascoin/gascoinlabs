@@ -9,7 +9,7 @@ export const profile = {
 }
 
 export const hero = {
-  headline: 'Software engineer across C++ systems and full stack web.',
+  headline: 'Software engineer focused on building useful systems.',
   sub: 'Two and a half years of commercial experience building production software, debugging real systems and shipping web work end to end. Looking for a team where I can keep growing and contribute useful work.',
   ctas: [
     { label: 'Ask Emile', to: '/ask', primary: true },
