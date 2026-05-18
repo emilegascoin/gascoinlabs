@@ -134,7 +134,6 @@ export const gascoinlabsProject = {
     'Wrote tests first for the API and abuse protection logic using Vitest. 32 tests passing across rate limiting, spend cap, message trimming and Turnstile verification.',
     'Broke work into small focused tasks and reviewed each change for spec compliance, code quality and fit with the rest of the app before merging anything.',
     'One logical change per commit so the history is actually readable. The git log doubles as a timeline of what was built when.',
-    'Deployed early to Vercel and iterated on the live site rather than building everything locally first.',
   ],
   features: [
     { title: 'Ask Emile chatbot', detail: 'Serverless AI chatbot grounded in my CV and personal context. Provider-agnostic adapter so the model can be changed through configuration. Streams responses back to the client with an animated typewriter effect for a more human feel.' },
