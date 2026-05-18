@@ -165,6 +165,38 @@ export const gascoinlabsProject = {
   ],
 }
 
+export const whisperProject = {
+  title: 'AI video localisation pipeline',
+  subtitle: 'A self-hosted pipeline for transcribing and captioning long-form technical video with domain-accurate speech recognition, built to solve a real problem at Scada Systems.',
+  role: 'Designer and developer',
+  dates: '2025',
+  stack: ['Python', 'FastAPI', 'OpenAI Whisper', 'FFmpeg', 'Win32 C++'],
+  context: 'Scada Systems produced long technical demo videos for its CAD software, often around 40 minutes. Some recordings came through with no SRT subtitle file and no surviving script, which made captioning effectively impossible. Doing this by hand for videos of that length was not realistic. I built a self-hosted pipeline to solve it.',
+  process: [
+    'Started with transcription using OpenAI Whisper. The immediate problem was domain accuracy: Whisper would mangle proprietary product names like "Elecdes Design Suite" into phonetic guesses. Fixed this with --initial_prompt biasing seeded with proper nouns and exact product spellings, backed by a glossary correction pass over the output. Chose this over fine-tuning because it gave acceptable domain accuracy with far lower operational complexity.',
+    'Handled subtitle timing issues caused by Whisper tying timestamps to absolute media time rather than semantic speech start, which caused drift on intro segments and non-speech gaps. Worked through FFmpeg trimming and timestamp offset shifting to normalise this.',
+    'Wrapped the Python pipeline in a Win32 C++ desktop app so it could be used without the command line. Moved long Whisper jobs off the UI thread with CreateThread and piped stdout and stderr back into a live log view using PostMessageW, so the app stayed responsive during jobs that could run for several minutes.',
+  ],
+  features: [
+    { title: 'Domain-accurate transcription', detail: 'OpenAI Whisper with --initial_prompt biasing seeded with proprietary product names and terminology, backed by a glossary correction pass. Chose prompt conditioning over model fine-tuning: same domain accuracy, far lower operational complexity and faster iteration.' },
+    { title: 'Subtitle timing normalisation', detail: 'Whisper ties timestamps to absolute media time rather than semantic speech start, causing drift on intro segments and non-speech gaps. Fixed with FFmpeg trimming and timestamp offset shifting to produce clean SRT output.' },
+    { title: 'FastAPI orchestration layer', detail: 'A FastAPI control plane manages uploads, spawns long-running transcription jobs, tracks progress and returns generated assets. Modularised into separate transcription and orchestration modules.' },
+    { title: 'Win32 C++ desktop frontend', detail: 'A native Win32 dialog application wrapping the pipeline for use without the command line. Long jobs run on worker threads via CreateThread with live stdout/stderr streamed back to the UI using PostMessageW. The first version blocked the UI thread and moving to background workers fixed it.' },
+    { title: 'Self-hosted by design', detail: 'No cloud dependency. The whole pipeline runs locally for privacy, cost control and offline processing. Moved toward bundling its own Python runtime, a local wheelhouse and an app-local FFmpeg to remove reliance on PATH config and internet connectivity.' },
+  ],
+  newToMe: {
+    intro: 'Things I worked with for the first time on this project:',
+    items: [
+      { name: 'OpenAI Whisper', detail: 'Speech recognition and SRT generation with timestamps. First time running a local ML model for a production task rather than calling an API.' },
+      { name: 'FastAPI', detail: 'Python web framework for the orchestration layer. Clean async support and automatic OpenAPI docs made it a good fit for managing long-running jobs.' },
+      { name: 'FFmpeg as a pipeline tool', detail: 'Used beyond format conversion: audio processing, timestamp normalisation and subtitle embedding.' },
+      { name: 'Prompt conditioning for domain bias', detail: 'Using --initial_prompt to steer a model toward correct proprietary terminology without the overhead of fine-tuning.' },
+    ],
+  },
+  outcome: 'A captioning task that was not feasible to do by hand became a near one-click workflow. A 40-minute technical demo that would have taken hours of manual transcription could be processed in a single run, with domain-accurate output ready for any final corrections. Built and used internally at Scada Systems.',
+  links: [],
+}
+
 // Add new projects here. They will appear on the /work index page automatically.
 export const projects = [
   {
@@ -182,6 +214,14 @@ export const projects = [
     role: gascoinlabsProject.role,
     dates: gascoinlabsProject.dates,
     stack: gascoinlabsProject.stack,
+  },
+  {
+    href: '/work/whisper',
+    title: whisperProject.title,
+    subtitle: whisperProject.subtitle,
+    role: whisperProject.role,
+    dates: whisperProject.dates,
+    stack: whisperProject.stack,
   },
 ]
 
