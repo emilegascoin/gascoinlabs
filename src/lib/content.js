@@ -197,6 +197,41 @@ export const whisperProject = {
   links: [],
 }
 
+export const interviewAiProject = {
+  title: 'InterviewAI',
+  subtitle: 'I built a local interview practice tool because the paid ones online were not worth it. Everything runs on your own hardware. Nothing leaves the machine.',
+  role: 'Designer and developer',
+  dates: '2026',
+  stack: ['Python', 'FastAPI', 'faster-whisper', 'Ollama', 'Vanilla JS', 'HTML/CSS'],
+  context: 'Interview prep tools online are either expensive subscriptions or not very good. I wanted something that would behave like actual practice: use the job ad, ask relevant questions, listen to my answers and tell me where I was weak. So I built it locally using a self-hosted LLM and local speech recognition. It still works without a GPU, just slower, and it runs offline once the models are downloaded.',
+  process: [
+    'Used Ollama with qwen2.5:7b for question generation and answer scoring. Calling Ollama with format: "json" meant the app got predictable scoring data instead of trying to clean up messy model text.',
+    'Filler word counting (um, uh, like, you know) is done with a Python regex rather than asking the LLM. That keeps it fast, accurate and not subject to hallucination.',
+    'All questions are generated upfront before the interview starts rather than one at a time. This matches how a real recruiter works with a prepared script, so there is no awkward wait between answers.',
+    'Between-question acknowledgments are fixed templates rather than LLM calls, same reason.',
+    'I kept the frontend plain: vanilla JS, one central state object and no build step. About 1050 lines but straightforward to follow.',
+  ],
+  features: [
+    { title: 'Practice and Full Simulation modes', detail: 'Practice mode generates questions from the job description and scores each answer straight away. Full Simulation feels more like a real interview: eight questions, no peeking ahead and feedback only shown at the end.' },
+    { title: 'Local speech transcription', detail: 'faster-whisper (large-v2) runs entirely on your machine. First use downloads the model (~1.5 GB), cached after that. GPU used automatically if available, falls back to CPU.' },
+    { title: 'Structured answer scoring', detail: 'Each answer is scored across five dimensions: overall, relevance, specificity, formality and filler word count. Technical mode also shows STAR coverage. Filler words are counted with Python regex, not the LLM.' },
+    { title: 'Holistic hire/no-hire review', detail: 'At the end of a simulation it tells you whether the answers would likely pass, where you sounded strong and where you sounded weak, with examples from what you actually said.' },
+    { title: 'CV upload and personalisation', detail: 'Upload a CV as PDF, DOCX or TXT. Extracted and summarised once, reused across sessions. Stored locally, never sent anywhere.' },
+    { title: 'Fully local and offline', detail: 'Audio, transcripts and job descriptions never leave the machine. No API costs, no account required. The whole point was to not pay for something I could build.' },
+  ],
+  newToMe: {
+    intro: 'Things I worked with for the first time on this project:',
+    items: [
+      { name: 'Ollama', detail: 'Running a local LLM (qwen2.5:7b) with structured JSON output. First time orchestrating a self-hosted model rather than calling a cloud API.' },
+      { name: 'faster-whisper', detail: 'CUDA-accelerated local speech recognition. Faster than the original Whisper with the same accuracy, GPU optional.' },
+      { name: 'Structured LLM output', detail: 'Using format: "json" with Ollama so scoring comes back as proper data rather than freetext I have to parse.' },
+      { name: 'pdfplumber and python-docx', detail: 'CV extraction from PDF and DOCX files without external services.' },
+    ],
+  },
+  outcome: 'I now have the interview prep tool I wanted: free to run, private and actually useful to practise with. Built it, use it.',
+  links: [],
+}
+
 // Add new projects here. They will appear on the /work index page automatically.
 export const projects = [
   {
@@ -222,6 +257,14 @@ export const projects = [
     role: whisperProject.role,
     dates: whisperProject.dates,
     stack: whisperProject.stack,
+  },
+  {
+    href: '/work/interview-ai',
+    title: interviewAiProject.title,
+    subtitle: interviewAiProject.subtitle,
+    role: interviewAiProject.role,
+    dates: interviewAiProject.dates,
+    stack: interviewAiProject.stack,
   },
 ]
 

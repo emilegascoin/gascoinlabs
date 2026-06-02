@@ -6,6 +6,7 @@ import Work from './pages/Work'
 import Elecdes from './pages/work/Elecdes'
 import Gascoinlabs from './pages/work/Gascoinlabs'
 import Whisper from './pages/work/Whisper'
+import InterviewAI from './pages/work/InterviewAI'
 import NotFound from './pages/NotFound'
 
 export default function App() {
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/work/elecdes" element={<Elecdes />} />
         <Route path="/work/gascoinlabs" element={<Gascoinlabs />} />
         <Route path="/work/whisper" element={<Whisper />} />
+        <Route path="/work/interview-ai" element={<InterviewAI />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
