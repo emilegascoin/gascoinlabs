@@ -20,7 +20,7 @@ export default {
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       maxWidth: {
-        prose: '68ch',
+        prose: '56rem',
       },
       keyframes: {
         'fade-in': {

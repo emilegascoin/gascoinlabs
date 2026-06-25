@@ -3,7 +3,7 @@ import Button from '../ui/Button'
 
 export default function Hero() {
   return (
-    <section id="hero" className="mx-auto max-w-5xl px-6 pt-20 pb-24">
+    <section id="hero" className="mx-auto max-w-6xl px-6 pt-20 pb-24">
       <p className="font-mono text-xs uppercase tracking-widest text-muted mb-6">
         // {profile.location.toLowerCase()}
       </p>

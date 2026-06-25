@@ -117,7 +117,7 @@ export default function Consulting({ prefill }) {
   const showFallback = status === 'failed' || status === 'rate-limited'
 
   return (
-    <section className="mx-auto max-w-5xl px-6 py-20 border-t border-rule crule">
+    <section className="mx-auto max-w-6xl px-6 py-20 border-t border-rule crule">
       <SectionHeading id="consulting" label="06 - consulting" title="Need a hand?" />
 
       <div className="max-w-prose">

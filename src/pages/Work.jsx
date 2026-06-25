@@ -3,7 +3,7 @@ import { projects } from '../lib/content'
 
 export default function Work() {
   return (
-    <div className="mx-auto max-w-5xl px-6 py-16">
+    <div className="mx-auto max-w-6xl px-6 py-16">
       <header className="mb-12">
         <p className="font-mono text-xs uppercase tracking-widest text-muted mb-2">/work</p>
         <h1 className="font-serif text-4xl text-navy">Projects</h1>

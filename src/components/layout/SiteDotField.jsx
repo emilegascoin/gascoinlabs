@@ -2,8 +2,8 @@ import { useEffect, useRef } from 'react'
 
 const NAVY = '31, 58, 95'
 const SPACING = 8
-const DOT_CORE_RADIUS = 0.7
-const DOT_FADE_RADIUS = 0.8
+const DOT_CORE_RADIUS = 0.9
+const DOT_FADE_RADIUS = 1.05
 const DOT_ALPHA = 0.07
 const ACTIVE_RADIUS = 170
 const MAX_SHIFT = 2

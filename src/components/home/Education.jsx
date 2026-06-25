@@ -3,7 +3,7 @@ import SectionHeading from '../ui/SectionHeading'
 
 export default function Education() {
   return (
-    <section className="mx-auto max-w-5xl px-6 py-20 border-t border-rule crule">
+    <section className="mx-auto max-w-6xl px-6 py-20 border-t border-rule crule">
       <SectionHeading id="education" label="03 - education" title="Where I studied" />
       <div className="space-y-8">
         {education.map((e) => (

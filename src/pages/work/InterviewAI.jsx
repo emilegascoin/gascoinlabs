@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 export default function InterviewAI() {
   const c = interviewAiProject
   return (
-    <article className="mx-auto max-w-5xl px-6 py-16">
+    <article className="mx-auto max-w-6xl px-6 py-16">
       <Link to="/work" className="text-sm text-muted hover:text-navy">&lt;- All projects</Link>
 
       <header className="mt-8 pb-10">
@@ -17,16 +17,20 @@ export default function InterviewAI() {
         </dl>
       </header>
 
-      <section className="py-12 max-w-prose border-t border-rule crule crule-flush">
-        <h2 className="font-serif text-2xl text-navy mb-4">Context</h2>
-        <p className="leading-relaxed">{c.context}</p>
+      <section className="py-12 border-t border-rule crule crule-flush">
+        <div className="max-w-prose">
+          <h2 className="font-serif text-2xl text-navy mb-4">Context</h2>
+          <p className="leading-relaxed">{c.context}</p>
+        </div>
       </section>
 
-      <section className="py-12 max-w-prose border-t border-rule crule crule-flush">
-        <h2 className="font-serif text-2xl text-navy mb-4">Process</h2>
-        <ol className="space-y-3 list-decimal list-inside">
-          {c.process.map((p, i) => <li key={i} className="leading-relaxed">{p}</li>)}
-        </ol>
+      <section className="py-12 border-t border-rule crule crule-flush">
+        <div className="max-w-prose">
+          <h2 className="font-serif text-2xl text-navy mb-4">Process</h2>
+          <ol className="space-y-3 list-decimal list-inside">
+            {c.process.map((p, i) => <li key={i} className="leading-relaxed">{p}</li>)}
+          </ol>
+        </div>
       </section>
 
       <section className="py-12 border-t border-rule crule crule-flush">
@@ -54,9 +58,11 @@ export default function InterviewAI() {
         </ul>
       </section>
 
-      <section className="py-12 max-w-prose border-t border-rule crule crule-flush">
-        <h2 className="font-serif text-2xl text-navy mb-4">Outcome</h2>
-        <p className="leading-relaxed">{c.outcome}</p>
+      <section className="py-12 border-t border-rule crule crule-flush">
+        <div className="max-w-prose">
+          <h2 className="font-serif text-2xl text-navy mb-4">Outcome</h2>
+          <p className="leading-relaxed">{c.outcome}</p>
+        </div>
       </section>
     </article>
   )
