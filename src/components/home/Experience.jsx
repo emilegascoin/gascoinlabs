@@ -25,13 +25,16 @@ export default function Experience() {
                   </li>
                 ))}
               </ul>
-              {job.caseStudyHref && (
-                <Link
-                  to={job.caseStudyHref}
-                  className="inline-block mt-5 text-sm text-navy underline underline-offset-4 hover:text-navy-dark"
-                >
-                  Read about the website development →
-                </Link>
+              {job.company === 'Scada Systems Ltd' && (
+                <div>
+                  <Link
+                    to="/work"
+                    state={{ filter: 'Scada Systems Ltd' }}
+                    className="inline-block mt-5 text-sm text-navy underline underline-offset-4 hover:text-navy-dark"
+                  >
+                    View all Scada Systems projects →
+                  </Link>
+                </div>
               )}
             </div>
           </article>

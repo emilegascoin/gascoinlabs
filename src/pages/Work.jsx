@@ -1,7 +1,25 @@
-import { Link } from 'react-router-dom'
+import { useMemo, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { projects } from '../lib/content'
 
+function getProjectCompany(project) {
+  return project.company || 'Personal projects'
+}
+
 export default function Work() {
+  const location = useLocation()
+  const availableFilters = useMemo(
+    () => [...new Set(projects.map(getProjectCompany))].sort(),
+    [],
+  )
+  const [activeFilter, setActiveFilter] = useState(() => {
+    const filter = location.state?.filter
+    return availableFilters.includes(filter) ? filter : ''
+  })
+  const filteredProjects = activeFilter
+    ? projects.filter((project) => getProjectCompany(project) === activeFilter)
+    : projects
+
   return (
     <div className="mx-auto max-w-6xl px-6 py-16">
       <header className="mb-12">
@@ -10,8 +28,49 @@ export default function Work() {
         <p className="text-sm text-muted mt-3">Things I have built or led. More to be added.</p>
       </header>
 
+      <div className="mb-8">
+        {activeFilter ? (
+          <span className="inline-flex items-center gap-2 rounded-full bg-navy px-4 py-2 text-sm text-cream">
+            {activeFilter}
+            <button
+              type="button"
+              aria-label="Clear filter"
+              onClick={() => setActiveFilter('')}
+              className="leading-none text-cream hover:text-cream/80"
+            >
+              ×
+            </button>
+          </span>
+        ) : (
+          <span className="relative inline-block">
+            <select
+              value=""
+              onChange={(event) => setActiveFilter(event.target.value)}
+              className="cursor-pointer appearance-none rounded-full border border-navy bg-white py-2 pl-5 pr-10 text-sm text-muted outline-none focus:border-navy"
+            >
+              <option value="" disabled hidden>
+                Filter by company
+              </option>
+              {availableFilters.map((filter) => (
+                <option key={filter} value={filter}>
+                  {filter}
+                </option>
+              ))}
+            </select>
+            <svg
+              aria-hidden="true"
+              className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-navy"
+              viewBox="0 0 16 16"
+              fill="none"
+            >
+              <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+        )}
+      </div>
+
       <div className="flex flex-col gap-6">
-        {projects.map((p) => (
+        {filteredProjects.map((p) => (
           <Link
             key={p.href}
             to={p.href}
@@ -50,7 +109,7 @@ export default function Work() {
                 </div>
               </div>
 
-              <span className="text-muted group-hover:text-navy transition-colors text-xl mt-1">-&gt;</span>
+              <span className="text-muted group-hover:text-navy transition-colors text-xl mt-1">→</span>
             </div>
           </Link>
         ))}

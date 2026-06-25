@@ -12,7 +12,7 @@ export default function Skills() {
             <p className="font-mono text-xs uppercase tracking-widest text-muted mb-3">{group}</p>
             <ul className="flex flex-wrap gap-2">
               {items.map((item) => (
-                <li key={item} className="px-3 py-1 border border-rule rounded-full text-sm">
+                <li key={item} className="px-3 py-1 border border-rule rounded-full bg-white text-sm">
                   {item}
                 </li>
               ))}
