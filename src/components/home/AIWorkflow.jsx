@@ -3,7 +3,7 @@ import SectionHeading from '../ui/SectionHeading'
 
 export default function AIWorkflow() {
   return (
-    <section className="mx-auto max-w-5xl px-6 py-20 border-t border-rule">
+    <section className="mx-auto max-w-5xl px-6 py-20 border-t border-rule crule">
       <SectionHeading id="ai-workflow" label="04 - how I work" title="Engineering, end to end" />
       <p className="max-w-prose text-lg leading-relaxed mb-8">{aiWorkflow.intro}</p>
       <ol className="space-y-4 max-w-prose">

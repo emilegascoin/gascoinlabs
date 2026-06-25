@@ -2,7 +2,7 @@ import { reference } from '../../lib/content'
 
 export default function Reference() {
   return (
-    <section className="mx-auto max-w-5xl px-6 py-20 border-t border-rule">
+    <section className="mx-auto max-w-5xl px-6 py-20 border-t border-rule crule">
       <figure className="max-w-prose">
         <blockquote className="font-serif text-2xl sm:text-3xl text-navy leading-snug italic">
           "{reference.quote}"

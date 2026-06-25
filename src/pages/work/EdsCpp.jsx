@@ -7,7 +7,7 @@ export default function EdsCpp() {
     <article className="mx-auto max-w-5xl px-6 py-16">
       <Link to="/work" className="text-sm text-muted hover:text-navy">&lt;- All projects</Link>
 
-      <header className="mt-8 pb-10 border-b border-rule">
+      <header className="mt-8 pb-10">
         <p className="font-mono text-xs uppercase tracking-widest text-muted mb-3">Project</p>
         <h1 className="font-serif text-4xl sm:text-5xl text-navy leading-tight">{c.title}</h1>
         <dl className="mt-6 grid sm:grid-cols-3 gap-4 text-sm">
@@ -18,19 +18,19 @@ export default function EdsCpp() {
         </dl>
       </header>
 
-      <section className="py-12 max-w-prose">
+      <section className="py-12 max-w-prose border-t border-rule crule crule-flush">
         <h2 className="font-serif text-2xl text-navy mb-4">Context</h2>
         <p className="leading-relaxed">{c.context}</p>
       </section>
 
-      <section className="py-12 max-w-prose border-t border-rule">
+      <section className="py-12 max-w-prose border-t border-rule crule crule-flush">
         <h2 className="font-serif text-2xl text-navy mb-4">How the work happened</h2>
         <ol className="space-y-3 list-decimal list-inside">
           {c.process.map((p, i) => <li key={i} className="leading-relaxed">{p}</li>)}
         </ol>
       </section>
 
-      <section className="py-12 border-t border-rule">
+      <section className="py-12 border-t border-rule crule crule-flush">
         <h2 className="font-serif text-2xl text-navy mb-6">A selection of issues</h2>
         <div className="grid sm:grid-cols-2 gap-6">
           {c.features.map((f) => (
@@ -42,7 +42,7 @@ export default function EdsCpp() {
         </div>
       </section>
 
-      <section className="py-12 max-w-prose border-t border-rule">
+      <section className="py-12 max-w-prose border-t border-rule crule crule-flush">
         <h2 className="font-serif text-2xl text-navy mb-4">Outcome</h2>
         <p className="leading-relaxed">{c.outcome}</p>
       </section>

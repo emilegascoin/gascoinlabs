@@ -7,7 +7,7 @@ export default function Gascoinlabs() {
     <article className="mx-auto max-w-5xl px-6 py-16">
       <Link to="/work" className="text-sm text-muted hover:text-navy">&lt;- All projects</Link>
 
-      <header className="mt-8 pb-10 border-b border-rule">
+      <header className="mt-8 pb-10">
         <p className="font-mono text-xs uppercase tracking-widest text-muted mb-3">Project</p>
         <h1 className="font-serif text-4xl sm:text-5xl text-navy leading-tight">{c.title}</h1>
         <dl className="mt-6 grid sm:grid-cols-3 gap-4 text-sm">
@@ -17,19 +17,19 @@ export default function Gascoinlabs() {
         </dl>
       </header>
 
-      <section className="py-12 max-w-prose">
+      <section className="py-12 max-w-prose border-t border-rule crule crule-flush">
         <h2 className="font-serif text-2xl text-navy mb-4">Context</h2>
         <p className="leading-relaxed">{c.context}</p>
       </section>
 
-      <section className="py-12 max-w-prose border-t border-rule">
+      <section className="py-12 max-w-prose border-t border-rule crule crule-flush">
         <h2 className="font-serif text-2xl text-navy mb-4">Process</h2>
         <ol className="space-y-3 list-decimal list-inside">
           {c.process.map((p, i) => <li key={i} className="leading-relaxed">{p}</li>)}
         </ol>
       </section>
 
-      <section className="py-12 border-t border-rule">
+      <section className="py-12 border-t border-rule crule crule-flush">
         <h2 className="font-serif text-2xl text-navy mb-6">What I worked on</h2>
         <div className="grid sm:grid-cols-2 gap-6">
           {c.features.map((f) => (
@@ -41,7 +41,7 @@ export default function Gascoinlabs() {
         </div>
       </section>
 
-      <section className="py-12 border-t border-rule">
+      <section className="py-12 border-t border-rule crule crule-flush">
         <h2 className="font-serif text-2xl text-navy mb-3">New to me on this project</h2>
         <p className="text-sm text-muted max-w-prose mb-6 leading-relaxed">{c.newToMe.intro}</p>
         <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-5">
@@ -54,7 +54,7 @@ export default function Gascoinlabs() {
         </ul>
       </section>
 
-      <section className="py-12 max-w-prose border-t border-rule">
+      <section className="py-12 max-w-prose border-t border-rule crule crule-flush">
         <h2 className="font-serif text-2xl text-navy mb-4">Outcome</h2>
         <p className="leading-relaxed">{c.outcome}</p>
         <ul className="mt-6 flex flex-wrap gap-4">

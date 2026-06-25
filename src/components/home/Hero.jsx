@@ -7,7 +7,7 @@ export default function Hero() {
       <p className="font-mono text-xs uppercase tracking-widest text-muted mb-6">
         // {profile.location.toLowerCase()}
       </p>
-      <h1 className="font-serif text-5xl sm:text-6xl text-navy leading-[1.05] tracking-tight">
+      <h1 className="font-serif text-5xl sm:text-6xl text-navy leading-[1.05] tracking-normal">
         {hero.headline}
       </h1>
       <p className="mt-6 max-w-prose text-lg text-ink/80 leading-relaxed">

@@ -13,3 +13,69 @@
     @apply font-serif text-navy;
   }
 }
+
+@layer components {
+  .site-dot-field {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+  }
+
+  /* Circuit-node section divider. Sits on top of the existing top rule:
+     a short navy trace from the content edge plus a small open square node. */
+  .crule {
+    position: relative;
+    --crule-left: 1.5rem;
+  }
+  .crule::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: var(--crule-left);
+    width: 34px;
+    height: 2px;
+    background: #1f3a5f;
+    transform-origin: left center;
+  }
+  .crule::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: calc(var(--crule-left) + 38px);
+    width: 7px;
+    height: 7px;
+    border: 1px solid #1f3a5f;
+    background: #fcfbf9;
+  }
+  .crule-flush {
+    --crule-left: 0px;
+  }
+  .motion-ready .motion-fade {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 520ms ease, transform 520ms ease;
+  }
+  .motion-ready .motion-fade.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .motion-ready .crule::before {
+    transform: scaleX(0);
+    transition: transform 720ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .motion-ready .crule::after {
+    opacity: 0;
+    transform: scale(0.72);
+    transition: opacity 240ms ease 420ms, transform 240ms ease 420ms;
+  }
+  .motion-ready .crule.is-visible::before {
+    transform: scaleX(1);
+  }
+  .motion-ready .crule.is-visible::after {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
