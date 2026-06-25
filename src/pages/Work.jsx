@@ -25,6 +25,12 @@ export default function Work() {
                 <p className="text-sm text-muted leading-relaxed mb-5">{p.subtitle}</p>
 
                 <dl className="flex flex-wrap gap-x-6 gap-y-2 text-sm mb-5">
+                  {p.company && (
+                    <div>
+                      <dt className="text-xs text-muted uppercase tracking-widest">Company</dt>
+                      <dd>{p.company}</dd>
+                    </div>
+                  )}
                   <div>
                     <dt className="text-xs text-muted uppercase tracking-widest">Role</dt>
                     <dd>{p.role}</dd>

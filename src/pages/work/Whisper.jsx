@@ -11,9 +11,10 @@ export default function Whisper() {
         <p className="font-mono text-xs uppercase tracking-widest text-muted mb-3">Project</p>
         <h1 className="font-serif text-4xl sm:text-5xl text-navy leading-tight">{c.title}</h1>
         <dl className="mt-6 grid sm:grid-cols-3 gap-4 text-sm">
+          {c.company && <div><dt className="text-muted text-xs">Company</dt><dd>{c.company}</dd></div>}
           <div><dt className="text-muted text-xs">Role</dt><dd>{c.role}</dd></div>
           <div><dt className="text-muted text-xs">Dates</dt><dd>{c.dates}</dd></div>
-          <div><dt className="text-muted text-xs">Stack</dt><dd>{c.stack.join(', ')}</dd></div>
+          <div className="sm:col-span-3"><dt className="text-muted text-xs">Stack</dt><dd>{c.stack.join(', ')}</dd></div>
         </dl>
       </header>
 

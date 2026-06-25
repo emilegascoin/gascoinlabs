@@ -96,6 +96,7 @@ export const askEmileWidget = {
 export const elecdesCaseStudy = {
   title: 'Elecdes Design Suite: marketing site redesign',
   subtitle: 'Near-complete rework of the Elecdes Design Suite marketing site. New design across software, services, downloads and demonstrations sections with a focus on making sales easier to reach.',
+  company: 'Scada Systems Ltd',
   role: 'Sole designer and developer',
   dates: 'Mid 2025 - Early 2026',
   stack: ['HTML', 'CSS', 'JavaScript', 'PHP', 'MySQL', 'Git'],
@@ -168,6 +169,7 @@ export const gascoinlabsProject = {
 export const whisperProject = {
   title: 'AI video localisation pipeline',
   subtitle: 'A self-hosted pipeline for transcribing and captioning long-form technical video with domain-accurate speech recognition, built to solve a real problem at Scada Systems.',
+  company: 'Scada Systems Ltd',
   role: 'Designer and developer',
   dates: '2025',
   stack: ['Python', 'FastAPI', 'OpenAI Whisper', 'FFmpeg', 'Win32 C++'],
@@ -232,12 +234,47 @@ export const interviewAiProject = {
   links: [],
 }
 
+export const edsCppProject = {
+  title: 'Elecdes Design Suite: C++ engineering',
+  subtitle: 'Around two and a half years of bug fixing and feature work on a large, mature C++/MFC industrial CAD application used by major engineering firms. A selection of the issues I diagnosed and fixed.',
+  company: 'Scada Systems Ltd',
+  role: 'Graduate Software Engineer',
+  dates: 'Nov 2023 - Mar 2026',
+  stack: ['C++', 'MFC', 'Win32 API', 'AutoCAD / ObjectARX', 'DBF / Access (ODBC)', 'Git'],
+  context: 'The Elecdes Design Suite is a large electrical and instrumentation CAD application written in C++ and MFC, used by engineering firms worldwide. Parts of it are decades older than I am. I spent about two and a half years working across it, fixing customer-reported bugs and building features, all from a Redmine issue tracker with code review from senior developers before anything merged. The work ranged from production crash diagnosis to Windows integration to performance fixes on projects with tens of thousands of records. Below are a few of the issues that show the kind of work it involved.',
+  process: [
+    'Most work started from a real customer report or a crash dump, so the first job was usually reproducing the problem before changing anything.',
+    'Fixes went through code review with senior developers. On an old codebase that meant understanding the existing patterns and matching them rather than doing my own thing.',
+    'Where a fix touched messy code, I refactored that part in a separate commit first so the actual behaviour change stayed small and reviewable.',
+    'Tracked everything in Redmine, version controlled in Git (and earlier SourceSafe).',
+  ],
+  features: [
+    { title: 'Diagnosing a 20GB error file from a BlueScope crash dump', detail: 'A crash dump from BlueScope came back with a 50 million record, 20GB error file. I traced it to the Raceway Integrity Checker running geometry checks on database-only raceway segments, which all sat at the same {0,0,0} position, so the overlap check flagged a false error for every possible pair. Filtering those segments out of the check stopped the explosion. The fix was one line. Finding it was the work.' },
+    { title: 'Protogen database file launch routing', detail: 'Double-clicking a Protogen database in Explorer opened the generic Database Editor instead of Protogen. I added detection that checks the file header for Protogen-specific columns, then hooked the launch decision into the command-line and DDE open path so the right program starts. Involved fixing some inverted open-result logic and getting the DDE handled / not-handled return values right.' },
+    { title: 'Navigate to Drawing context menu', detail: 'Added a right-click action to jump from a database row straight to the drawing it references. It scans the row for a filename column, resolves relative paths to full paths against the project, and opens it in the right CAD tool. I cached which columns are eligible per file so right-click stays instant even on tables with 1000+ columns.' },
+    { title: 'Map-based duplicate catalog detection', detail: 'One of my first issues at the company and one I was proud of. Wrong part references were hard to diagnose because nobody realised they had the same catalog entry living in two files. I reused the existing catalog reference map, keyed by catalog number, so a second insert that landed on an existing key flagged a duplicate, plus a separate check for duplicate catalog filenames. Added a button to view the duplicates from the catalog list.' },
+    { title: 'Refactor then rebuild on the Global Editor Find and Replace', detail: 'A batch of usability problems reported by two senior users. Before touching any behaviour I refactored the dialog data structures in a separate commit, cutting around 550 lines. Then I fixed the controls, replaced a backwards checkbox with a clearer three-way radio, persisted column selections per class, and swapped a nested-loop lookup for a handle-set to speed it up.' },
+  ],
+  outcome: 'Over two and a half years I closed a long list of issues across the suite, from one-line fixes that took days to find to multi-part features. The reference from the company director described the work as high quality with very few errors, completed within planned timeframes. More than anything it taught me how to become useful in a large unfamiliar codebase quickly, which is most of what real engineering actually is.',
+  links: [],
+}
+
 // Add new projects here. They will appear on the /work index page automatically.
 export const projects = [
+  {
+    href: '/work/eds-cpp',
+    title: edsCppProject.title,
+    subtitle: edsCppProject.subtitle,
+    company: edsCppProject.company,
+    role: edsCppProject.role,
+    dates: edsCppProject.dates,
+    stack: edsCppProject.stack,
+  },
   {
     href: '/work/elecdes',
     title: elecdesCaseStudy.title,
     subtitle: elecdesCaseStudy.subtitle,
+    company: elecdesCaseStudy.company,
     role: elecdesCaseStudy.role,
     dates: elecdesCaseStudy.dates,
     stack: elecdesCaseStudy.stack,
@@ -254,6 +291,7 @@ export const projects = [
     href: '/work/whisper',
     title: whisperProject.title,
     subtitle: whisperProject.subtitle,
+    company: whisperProject.company,
     role: whisperProject.role,
     dates: whisperProject.dates,
     stack: whisperProject.stack,

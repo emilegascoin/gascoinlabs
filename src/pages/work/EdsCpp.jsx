@@ -1,8 +1,8 @@
-import { elecdesCaseStudy } from '../../lib/content'
+import { edsCppProject } from '../../lib/content'
 import { Link } from 'react-router-dom'
 
-export default function Elecdes() {
-  const c = elecdesCaseStudy
+export default function EdsCpp() {
+  const c = edsCppProject
   return (
     <article className="mx-auto max-w-5xl px-6 py-16">
       <Link to="/work" className="text-sm text-muted hover:text-navy">&lt;- All projects</Link>
@@ -24,14 +24,14 @@ export default function Elecdes() {
       </section>
 
       <section className="py-12 max-w-prose border-t border-rule">
-        <h2 className="font-serif text-2xl text-navy mb-4">Process</h2>
+        <h2 className="font-serif text-2xl text-navy mb-4">How the work happened</h2>
         <ol className="space-y-3 list-decimal list-inside">
           {c.process.map((p, i) => <li key={i} className="leading-relaxed">{p}</li>)}
         </ol>
       </section>
 
       <section className="py-12 border-t border-rule">
-        <h2 className="font-serif text-2xl text-navy mb-6">What I worked on</h2>
+        <h2 className="font-serif text-2xl text-navy mb-6">A selection of issues</h2>
         <div className="grid sm:grid-cols-2 gap-6">
           {c.features.map((f) => (
             <div key={f.title} className="border border-rule rounded-lg p-5 bg-cream">
@@ -45,15 +45,6 @@ export default function Elecdes() {
       <section className="py-12 max-w-prose border-t border-rule">
         <h2 className="font-serif text-2xl text-navy mb-4">Outcome</h2>
         <p className="leading-relaxed">{c.outcome}</p>
-        <ul className="mt-6 flex flex-wrap gap-4">
-          {c.links.map((l) => (
-            <li key={l.label}>
-              <a href={l.href} target="_blank" rel="noreferrer" className="text-navy underline underline-offset-4">
-                {l.label} -&gt;
-              </a>
-            </li>
-          ))}
-        </ul>
       </section>
     </article>
   )
