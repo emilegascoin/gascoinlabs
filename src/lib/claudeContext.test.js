@@ -10,8 +10,10 @@ describe('buildSystemPrompt', () => {
     expect(buildSystemPrompt()).toMatch(/Don't invent/i)
   })
 
-  it('includes the email fallback line', () => {
-    expect(buildSystemPrompt()).toMatch(/emilegascoin@gmail\.com/)
+  it('directs people to the contact form without exposing an email', () => {
+    const prompt = buildSystemPrompt()
+    expect(prompt).not.toMatch(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)
+    expect(prompt).toMatch(/contact form/i)
   })
 
   it('includes content from content.js (e.g. company name)', () => {

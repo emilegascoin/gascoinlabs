@@ -36,7 +36,7 @@ function retryAfterFrom(res) {
   return Number.isFinite(seconds) ? seconds : undefined
 }
 
-export async function sendToDiscord({ name, email, company, scope, source }) {
+export async function sendToDiscord({ name, email, company, phone, scope, source }) {
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL
   if (!webhookUrl) return { ok: false, status: 0, error: 'unconfigured' }
 
@@ -61,6 +61,7 @@ export async function sendToDiscord({ name, email, company, scope, source }) {
             fields: [
               { name: 'Name', value: fieldValue(name), inline: true },
               { name: 'Email', value: fieldValue(email), inline: true },
+              { name: 'Phone', value: fieldValue(phone), inline: true },
               { name: 'Company', value: fieldValue(company), inline: true },
               { name: 'Source', value: fieldValue(source), inline: true },
               { name: 'Scope', value: scopeValue(scope), inline: false },

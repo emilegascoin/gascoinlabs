@@ -324,8 +324,8 @@ export default function Ask() {
       // If we got partial content before the error, show it with a short note
       // rather than replacing everything with a generic error message.
       const content = partial
-        ? `${partial}\n\n(Something cut out there - email me at emilegascoin@gmail.com if it keeps happening.)`
-        : (state.error.message || 'Something went wrong on my end. Email me at emilegascoin@gmail.com.')
+        ? `${partial}\n\n(Something cut out there. Try the contact form on the home page if it keeps happening.)`
+        : (state.error.message || 'Something went wrong on my end. Try the contact form on the home page.')
       setMessages([...next, { role: 'assistant', content: content.trim() }])
     } else {
       setMessages([...next, {

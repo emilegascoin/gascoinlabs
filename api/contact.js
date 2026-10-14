@@ -4,12 +4,12 @@ import { sendToDiscord } from './_lib/discord.js'
 import { captureError } from './_lib/sentry.js'
 
 const TOO_LARGE_BYTES = 8 * 1024
-const DELIVERY_ERROR = 'Could not deliver right now. Email emilegascoin@gmail.com direct.'
+const DELIVERY_ERROR = 'Could not deliver right now. Please try again shortly.'
 
 const RATE_LIMIT_MESSAGES = {
   ip_hour: 'You have submitted too many enquiries this hour. Try again later.',
-  ip_day: "You have hit today's submission limit. Try again tomorrow or email emilegascoin@gmail.com direct.",
-  redis_unavailable: 'Submission temporarily unavailable. Email emilegascoin@gmail.com direct.',
+  ip_day: "You have hit today's submission limit. Please try again tomorrow.",
+  redis_unavailable: 'Submission temporarily unavailable. Please try again shortly.',
 }
 
 // IP extraction: prefer x-real-ip (Vercel sets this to the trusted client IP).
@@ -82,16 +82,32 @@ function validateString(value, field, { required = false, min = 0, max, pattern 
 }
 
 function validateEmail(value) {
-  const validated = validateString(value, 'email', { required: true, min: 1, max: 254 })
+  const validated = validateString(value, 'email', { max: 254 })
   if (validated.error) return validated
 
   const email = validated.value
+  if (!email) return { value: '' }
+
   const parts = email.split('@')
   if (parts.length !== 2 || !parts[0] || !parts[1] || !parts[1].includes('.')) {
     return { error: 'email is invalid.', field: 'email' }
   }
 
   return { value: email }
+}
+
+function validatePhone(value) {
+  const validated = validateString(value, 'phone', { max: 40 })
+  if (validated.error) return validated
+
+  const phone = validated.value
+  if (!phone) return { value: '' }
+
+  if (phone.length < 5 || !/^[0-9+()\-\s]+$/.test(phone)) {
+    return { error: 'phone is invalid.', field: 'phone' }
+  }
+
+  return { value: phone }
 }
 
 function validateBody(body) {
@@ -104,6 +120,9 @@ function validateBody(body) {
 
   const email = validateEmail(body.email)
   if (email.error) return email
+
+  const phone = validatePhone(body.phone)
+  if (phone.error) return phone
 
   const company = validateString(body.company, 'company', { max: 150 })
   if (company.error) return company
@@ -119,10 +138,15 @@ function validateBody(body) {
     if (token.error) return token
   }
 
+  if (!email.value && !phone.value) {
+    return { error: 'Provide an email or phone number.', field: 'contact' }
+  }
+
   return {
     value: {
       name: name.value,
       email: email.value,
+      phone: phone.value,
       company: company.value,
       scope: scope.value,
       source: source.value,
@@ -176,7 +200,7 @@ export default async function handler(req, res) {
       return
     }
 
-    const { name, email, company, scope, source } = validated.value
+    const { name, email, company, phone, scope, source } = validated.value
     const linkCount = (scope.match(/https?:\/\//gi) || []).length
     if (linkCount > 5) {
       sendJson(res, 400, { error: 'Too many links.' })
@@ -203,7 +227,7 @@ export default async function handler(req, res) {
       return
     }
 
-    const result = await sendToDiscord({ name, email, company, scope, source: source || 'form' })
+    const result = await sendToDiscord({ name, email, company, phone, scope, source: source || 'form' })
     if (result.ok) {
       sendJson(res, 200, { ok: true })
       return

@@ -7,7 +7,7 @@ import { captureError } from './_lib/sentry.js'
 import { aiProvider } from '../src/lib/aiProvider.js'
 import { buildSystemPrompt } from '../src/lib/claudeContext.js'
 
-const FALLBACK_SPEND_CAP = "Ask Emile is taking a break for today. Email me at emilegascoin@gmail.com and I'll get back to you when I've had a think."
+const FALLBACK_SPEND_CAP = "Ask Emile is taking a break for today. Please try again later or use the contact form on the home page."
 const SYSTEM_PROMPT = buildSystemPrompt()
 
 function getIp(req) {
@@ -53,7 +53,7 @@ export default async function handler(req, res) {
 
   if (!rl.allowed) {
     res.status(429).json({
-      error: "You've hit today's limit. Email me at emilegascoin@gmail.com if you've got more questions.",
+      error: "You've hit today's limit. Please try again tomorrow or use the contact form on the home page.",
     })
     return
   }
@@ -112,7 +112,7 @@ export default async function handler(req, res) {
     streamErrored = true
     console.error('Provider error', err)
     captureError(err, { context: 'provider', ip })
-    sendEvent('\n\nSomething went wrong on my end. Email me at emilegascoin@gmail.com.')
+    sendEvent('\n\nSomething went wrong on my end. Try the contact form on the home page.')
   } finally {
     res.end()
   }

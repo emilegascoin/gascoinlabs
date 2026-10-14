@@ -1,7 +1,5 @@
 export const profile = {
   name: 'Emile Gascoin',
-  email: 'emilegascoin@gmail.com',
-  phone: '+61 405 482 025',
   github: 'https://github.com/emilegascoin',
   location: 'Melbourne, VIC',
   availability: 'Available now',

@@ -20,7 +20,7 @@ const VALID_BODY = {
   website: '',
 }
 
-const DELIVERY_ERROR = 'Could not deliver right now. Email emilegascoin@gmail.com direct.'
+const DELIVERY_ERROR = 'Could not deliver right now. Please try again shortly.'
 
 function validBody(overrides = {}) {
   return { ...VALID_BODY, ...overrides }
@@ -132,11 +132,29 @@ describe('/api/contact', () => {
     expect(res.body).toMatchObject({ field: 'name' })
   })
 
-  it('returns 400 with field=email when email is missing', async () => {
-    const res = await callHandler(createReq({ body: validBody({ email: undefined }) }))
+  it('returns 400 with field=contact when email and phone are both missing', async () => {
+    const res = await callHandler(createReq({ body: validBody({ email: undefined, phone: undefined }) }))
 
     expect(res.statusCode).toBe(400)
-    expect(res.body).toMatchObject({ field: 'email' })
+    expect(res.body).toEqual({ error: 'Provide an email or phone number.', field: 'contact' })
+  })
+
+  it('returns 200 and sends to Discord when phone is provided without email', async () => {
+    const res = await callHandler(createReq({ body: validBody({ email: undefined, phone: '+61 (02) 5555-0199' }) }))
+
+    expect(res.statusCode).toBe(200)
+    expect(res.body).toEqual({ ok: true })
+    expect(sendToDiscord).toHaveBeenCalledWith(expect.objectContaining({
+      email: '',
+      phone: '+61 (02) 5555-0199',
+    }))
+  })
+
+  it('returns 400 with field=phone when phone is invalid', async () => {
+    const res = await callHandler(createReq({ body: validBody({ phone: 'call me' }) }))
+
+    expect(res.statusCode).toBe(400)
+    expect(res.body).toEqual({ error: 'phone is invalid.', field: 'phone' })
   })
 
   it('returns 400 when email is over 254 chars', async () => {
@@ -233,8 +251,8 @@ describe('/api/contact', () => {
 
   it.each([
     ['ip_hour', 'You have submitted too many enquiries this hour. Try again later.'],
-    ['ip_day', "You have hit today's submission limit. Try again tomorrow or email emilegascoin@gmail.com direct."],
-    ['redis_unavailable', 'Submission temporarily unavailable. Email emilegascoin@gmail.com direct.'],
+    ['ip_day', "You have hit today's submission limit. Please try again tomorrow."],
+    ['redis_unavailable', 'Submission temporarily unavailable. Please try again shortly.'],
   ])('returns 429 with %s rate limit message', async (reason, message) => {
     checkContactRateLimit.mockResolvedValue({ allowed: false, reason })
 
@@ -252,6 +270,7 @@ describe('/api/contact', () => {
     expect(sendToDiscord).toHaveBeenCalledWith({
       name: 'Alice',
       email: 'alice@example.com',
+      phone: '',
       company: 'Acme',
       scope: 'Need help with X for two weeks',
       source: 'form',

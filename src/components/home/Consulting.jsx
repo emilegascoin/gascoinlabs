@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { getTurnstileToken } from '../../lib/turnstileClient'
 import SectionHeading from '../ui/SectionHeading'
 
-const EMAIL = 'emilegascoin@gmail.com'
 const EMPTY_FORM = {
   name: '',
   email: '',
@@ -98,15 +97,15 @@ export default function Consulting({ prefill }) {
       const serverError = await res.json().catch(() => ({}))
       if (res.status === 429) {
         setStatus('rate-limited')
-        setMessage(serverError.error || `Too many submissions right now. Email me at ${EMAIL}.`)
+        setMessage(serverError.error || 'Too many submissions right now. Please try again shortly.')
         return
       }
 
       setStatus('failed')
-      setMessage(`Something broke on my end. Try again or email me at ${EMAIL}.`)
+      setMessage('Something broke on my end. Please try again shortly.')
     } catch {
       setStatus('failed')
-      setMessage(`Something broke on my end. Try again or email me at ${EMAIL}.`)
+      setMessage('Something broke on my end. Please try again shortly.')
     } finally {
       setTurnstileToken('')
       refreshToken()
@@ -114,7 +113,6 @@ export default function Consulting({ prefill }) {
   }
 
   const isSending = status === 'sending'
-  const showFallback = status === 'failed' || status === 'rate-limited'
 
   return (
     <section className="mx-auto max-w-6xl px-6 py-20 border-t border-rule crule">
@@ -219,14 +217,6 @@ export default function Consulting({ prefill }) {
             {message && (
               <p className="text-sm text-navy">
                 {message}
-                {showFallback && (
-                  <>
-                    {' '}
-                    <a href={`mailto:${EMAIL}`} className="underline underline-offset-4">
-                      Email me direct.
-                    </a>
-                  </>
-                )}
               </p>
             )}
 

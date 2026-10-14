@@ -30,8 +30,12 @@ export async function getTurnstileToken() {
 
     let widgetId
     const cleanup = () => {
-      try { window.turnstile.remove(widgetId) } catch {}
-      try { document.body.removeChild(container) } catch {}
+      try { window.turnstile.remove(widgetId) } catch {
+        // Ignore cleanup errors for already-removed widgets.
+      }
+      try { document.body.removeChild(container) } catch {
+        // Ignore cleanup errors for already-removed containers.
+      }
     }
 
     // Safety net - if the widget never fires, fail fast so the caller can
